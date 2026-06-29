@@ -131,17 +131,15 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       </div>
     </section>
 
-    <!-- ペット同伴（売り）：看板犬の実写真を横並びで見せる -->
+    <!-- ペット同伴（売り）：看板犬の写真を背景に敷く（黒オーバーレイ＋白文字） -->
     <section class="pet">
-      <div class="pet-text">
+      <img class="pet-bg" src={img('dog-sleep.jpg')} alt="お店の看板犬（黒柴）" loading="lazy" />
+      <div class="pet-veil"></div>
+      <div class="pet-inner">
         <p class="sec-en">With your pet</p>
-        <h2 class="sec-jp">大切な家族（ペット）も、<br />ご一緒に。</h2>
-        <p>{shop.petNote}</p>
-        <span class="pet-badge"><Fragment set:html={pawSvg} /> ペット同伴 相談可</span>
-      </div>
-      <div class="pet-photo">
-        <img src={img('dog-sleep.jpg')} alt="お店の看板犬（黒柴）" loading="lazy" />
-        <span class="pet-cap"><Fragment set:html={pawSvg} /> 看板犬</span>
+        <h2 class="sec-jp">大切な家族（ペット）も、ご一緒に。</h2>
+        <p class="pet-lead">{shop.petNote}</p>
+        <span class="pet-badge"><Fragment set:html={pawSvg} /> 看板犬がお出迎え・ペット同伴 相談可</span>
       </div>
     </section>
 
@@ -248,11 +246,11 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       .btn-fill { background: var(--brown); color: #fff; }
       .btn-fill:hover { background: var(--brown-d); }
       .btn-fill.sm { padding: 11px 24px; font-size: 13px; }
-      /* LINE（メイン連絡先）を目立たせる緑ボタン */
-      .btn-line-g { background: var(--line-green); color: #fff; box-shadow: 0 8px 22px rgba(6, 199, 85, 0.28); }
-      .btn-line-g:hover { background: var(--line-green-d); }
+      /* LINE（メイン連絡先）。palette に馴染む上品なブラウン＋LINEアイコンで主役感を出す */
+      .btn-line-g { background: var(--brown); color: #fff; }
+      .btn-line-g:hover { background: var(--brown-d); }
       .btn-line-g.sm { padding: 11px 24px; font-size: 13px; }
-      .btn-line-g.lg { padding: 17px 42px; font-size: 16px; }
+      .btn-line-g.lg { padding: 17px 42px; font-size: 16px; box-shadow: 0 12px 28px rgba(131, 95, 60, 0.22); }
       .btn-line2 { border: 1px solid #fff; color: #fff; }
       .btn-line2:hover { background: rgba(255, 255, 255, 0.15); }
       .btn-ghost { border: 1px solid var(--brown); color: var(--brown); }
@@ -271,11 +269,11 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       .hd-cta {
         display: inline-flex; align-items: center; gap: 7px;
         font-size: 13px; letter-spacing: 0.06em; text-decoration: none; color: #fff; font-weight: 500;
-        background: var(--line-green); padding: 9px 18px; border-radius: 999px;
-        box-shadow: 0 6px 18px rgba(6, 199, 85, 0.3);
+        background: rgba(255, 255, 255, 0.14); border: 1px solid rgba(255, 255, 255, 0.6);
+        padding: 8px 18px; border-radius: 999px; backdrop-filter: blur(2px);
       }
-      .hd-cta:hover { background: var(--line-green-d); }
-      .hd-cta svg { width: 16px; height: 16px; }
+      .hd-cta:hover { background: rgba(255, 255, 255, 0.24); }
+      .hd-cta svg { width: 15px; height: 15px; }
 
       /* ヒーロー */
       .hero { position: relative; height: min(88vh, 760px); overflow: hidden; display: flex; align-items: center; }
@@ -356,7 +354,7 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       .ft-logo { font-family: 'Shippori Mincho', serif; font-weight: 700; font-size: 26px; letter-spacing: 0.14em; }
       .ft-tagline { color: var(--muted); font-size: 13px; letter-spacing: 0.16em; margin-top: 6px; }
       .ft-lead { margin: 22px 0 18px; font-size: 15px; color: var(--ink); }
-      .ft-lead strong { color: var(--line-green-d); font-weight: 700; }
+      .ft-lead strong { color: var(--brown-d); font-weight: 700; }
       .ft-tel {
         font-size: 14px; color: var(--brown-d); text-decoration: none;
         border-bottom: 1px solid var(--gold); padding-bottom: 2px;
@@ -370,25 +368,20 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       .ft-back { display: inline-block; margin-top: 26px; font-size: 13px; color: var(--brown); text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 2px; }
       .ft-demo { margin-top: 28px; font-size: 11px; color: #a99c88; }
 
-      /* ペット同伴（看板犬の実写真を横並びで見せる） */
-      .pet { display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; background: var(--cream2); }
-      .pet-text { padding: clamp(48px, 7vw, 96px) clamp(28px, 6vw, 80px); align-self: center; }
-      .pet-text h2 { margin-bottom: 18px; }
-      .pet-text p { color: #5c5346; font-size: 15px; }
-      .pet-photo { position: relative; min-height: 480px; }
-      .pet-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
-      .pet-cap {
-        position: absolute; left: 18px; bottom: 18px; display: inline-flex; align-items: center; gap: 6px;
-        background: rgba(255, 255, 255, 0.92); color: var(--brown-d);
-        font-size: 12px; letter-spacing: 0.1em; padding: 6px 14px; border-radius: 999px;
-      }
-      .pet-cap svg { width: 14px; height: 14px; }
+      /* ペット同伴（看板犬の写真を背景に敷く＝黒オーバーレイ＋白文字） */
+      .pet { position: relative; overflow: hidden; text-align: center; color: #fff; padding: clamp(80px, 13vw, 150px) 24px; }
+      .pet-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
+      .pet-veil { position: absolute; inset: 0; background: linear-gradient(rgba(28, 22, 16, 0.5), rgba(28, 22, 16, 0.66)); }
+      .pet-inner { position: relative; z-index: 2; }
+      .pet .sec-en { color: #f1e4d0; }
+      .pet .sec-jp { color: #fff; text-shadow: 0 2px 16px rgba(0, 0, 0, 0.3); }
+      .pet-lead { max-width: 30em; margin: 18px auto 0; color: #f2e9dc; font-size: 15px; }
       .pet-badge {
-        display: inline-flex; align-items: center; gap: 8px; margin-top: 24px;
-        background: #fff; border: 1px solid var(--gold); color: var(--brown-d);
+        display: inline-flex; align-items: center; gap: 8px; margin-top: 26px;
+        background: rgba(255, 255, 255, 0.96); border: 1px solid rgba(255, 255, 255, 0.5); color: var(--brown-d);
         padding: 10px 22px; border-radius: 999px; font-size: 13px; letter-spacing: 0.06em; white-space: nowrap;
       }
-      .pet-badge svg { width: 17px; height: 17px; }
+      .pet-badge svg { width: 16px; height: 16px; }
 
       /* アクセス（地図） */
       .access { display: grid; grid-template-columns: 0.92fr 1.08fr; align-items: stretch; background: var(--cream2); }
@@ -404,8 +397,6 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       .access-map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
       @media (max-width: 760px) {
-        .pet { grid-template-columns: 1fr; }
-        .pet-photo { min-height: 380px; order: -1; }
         .access { grid-template-columns: 1fr; }
         .access-map { min-height: 300px; }
         .menu-card { grid-template-columns: 1fr; }
