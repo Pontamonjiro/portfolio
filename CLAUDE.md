@@ -63,31 +63,31 @@ astro dev --background
 - ページ間で共有する見た目は `global.css`、ページ/部品固有は Astro の `<style>`（scoped）に書く
 - 内部リンクをハードコードしない（`href()` を使う）
 
-## アーキテクチャ上の重要ルール（公開戦略）
+## アーキテクチャ上の重要ルール（公開戦略 / 2リポ構成）
 
-**ソースは Private リポ、公開アウトプットは Public リポ（2リポ構成）。**
+**Webコードは Public、メモ類は Private。役割で2つのリポに分ける。**
 
-- ソースリポ（Private）… この Astro プロジェクト本体
-- 公開リポ（Public）  … ビルド成果物 `dist/` だけを置く。GitHub Pages の公開元
-- `push` → `.github/workflows/deploy.yml` が CI でビルドし、`dist/` を公開リポの `gh-pages` ブランチへ送る（`peaceiris/actions-gh-pages`）
+- **Public リポ `Pontamonjiro/portfolio`** … この Astro プロジェクト本体（コード）。
+  - `main` に push → `.github/workflows/deploy.yml`（GitHub公式 `withastro/action` + `actions/deploy-pages`）がビルドして GitHub Pages へ公開。PAT不要。
+  - 公開URL: **https://pontamonjiro.github.io/portfolio/**
+  - そのため `astro.config.mjs` は `site: 'https://pontamonjiro.github.io'` / `base: '/portfolio/'`。
+    内部リンクは `href()`、アセットは `import.meta.env.BASE_URL` 基準にすること（base変更に追従）。
+- **Private リポ `Pontamonjiro/portfolio-notes`** … 非公開メモ。`source/` フォルダが丸ごとこの別リポ（Publicリポは `source/` を `.gitignore` で除外）。
+  - 進捗ログ・コンセプト（なぜ作ったか）・リソースメモ等を入れる。`git -C source ...` で操作。
 
-### デプロイの初期設定（未完了。リポ作成後に行う）
-
-1. Public 公開リポを作成（例: `<user>/portfolio-pages`）→ Settings > Pages で公開元を `gh-pages` に
-2. 書き込み権限つき PAT（repo スコープ）を発行
-3. ソースリポの Settings > Secrets > Actions に `PAGES_DEPLOY_TOKEN` として登録
-4. `deploy.yml` の `external_repository` を実リポ名に書き換え
-5. `astro.config.mjs` の `site` / `base` を公開URLに合わせて修正
-   - 公開リポが `<user>.github.io` 以外なら `base: '/<repo>/'`
+### 公開の運用
+- コード変更 → Publicリポに push すれば自動でPages反映。
+- メモ更新 → `source/`（Privateリポ）側で commit/push。
 
 ## 注意事項
 
 - `.env` 等の秘密情報はコミットしない（`.gitignore` 済）
-- `dist/` と `.astro/` はビルド生成物なのでコミットしない（`.gitignore` 済）
+- `dist/` `.astro/` `source/`（非公開メモ）はPublicリポに含めない（`.gitignore` 済）
 - Node 20 で `npm run dev`/`build` を実行すると engines 警告。22 を使うこと
 
 ## 進捗管理
 
+- 進捗ログは **Privateリポ側 `source/work_progress.md`**（Publicには出さない）
 - **セッション開始時に `source/work_progress.md` を確認し、未完了タスクを把握すること**
 - 作業依頼を受けたら進捗ファイルに項目追加、完了したら「済」マーク
 - フォーマット: 日付セクション → チェックリスト → 対応ログ表

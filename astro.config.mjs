@@ -9,6 +9,6 @@ import { defineConfig } from 'astro/config';
 //   内部リンクは src/site.config.ts の href() を使っているため、ここを変えるだけで追従する。
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://example.github.io',
-  base: '/',
+  site: 'https://pontamonjiro.github.io',
+  base: '/portfolio/',
 });
