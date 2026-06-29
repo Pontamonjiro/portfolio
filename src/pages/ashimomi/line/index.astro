@@ -1,10 +1,52 @@
 ---
-// 【ポートフォリオ用ダミー】LINE「友だち追加」デモ画面。
-// 本番では実際のLINE公式アカウント（https://lin.ee/xxxx）に差し替えるので、このページは不要になる。
+// 【ポートフォリオ用ダミー】LINE公式アカウントの「トーク画面」デモ。
+// 実際のLINE連携は作らず、見た目と流れ（予約のやり取り・定休日案内・リッチメニュー）を再現する。
+// 本番では shop.lineUrl を実 lin.ee URL に差し替え、このページは不要になる。
 import { ashimomi as shop } from '../../../data/shops/ashimomi';
 
 const back = `${import.meta.env.BASE_URL}ashimomi/`;
 const initial = shop.name.charAt(0);
+const price = shop.fallbackMenu?.[0]?.price ?? '4,000円';
+
+// 自動返信の台本（店舗データから組み立て）。リッチメニュー各ボタンに対応。
+const SCRIPT = {
+  intro: [
+    { who: 'shop', text: `友だち追加ありがとうございます🌿 ${shop.name}です。\nご予約・ご相談はこのトークからお気軽にどうぞ！` },
+    { who: 'info', text: `【お知らせ】今週は木曜定休です。臨時休業の際はこのトークでお伝えします🙇\n本日は${shop.hoursNote}で営業中です。` },
+  ],
+  actions: {
+    reserve: [
+      { who: 'me', text: '予約したいです' },
+      { who: 'shop', text: `ありがとうございます😊 ご希望の日時を教えてください。\n（例：6/30 14:00〜）\n全身マッサージ（1.5〜2時間／${price}）でご案内します。` },
+      { who: 'me', text: '6/30 14:00でお願いします' },
+      { who: 'shop', text: '6/30 14:00〜で空きがございます✅\nご予約を承りました！当日お気をつけてお越しください。' },
+    ],
+    price: [
+      { who: 'me', text: '料金を教えてください' },
+      { who: 'shop', text: `全身マッサージ ${price}（1.5〜2時間）の一律料金です。\nお一人おひとりの体に合わせて、肩・背中・腰から脚先まで全身をていねいにほぐします。` },
+    ],
+    hours: [
+      { who: 'me', text: '定休日・営業時間は？' },
+      { who: 'shop', text: `受付時間は${shop.hoursNote}です🕒\n定休日は${shop.closedNote}。最新の営業日・臨時休業はこのトークと店頭でお知らせします。` },
+    ],
+    access: [
+      { who: 'me', text: '場所はどこですか？' },
+      { who: 'shop', text: `住所はこちらです📍\n${shop.address}`, link: { label: 'Googleマップで開く', url: shop.mapUrl } },
+    ],
+    tel: [
+      { who: 'me', text: '電話で相談したいです' },
+      { who: 'shop', text: 'お電話でもどうぞ📞 受付時間内にご連絡ください。\nこのトークからのご予約も承っています。' },
+    ],
+  },
+};
+
+const MENU = [
+  { key: 'reserve', icon: '📅', label: '予約する' },
+  { key: 'price', icon: '💴', label: '料金' },
+  { key: 'hours', icon: '🕒', label: '定休日・時間' },
+  { key: 'access', icon: '📍', label: 'アクセス' },
+  { key: 'tel', icon: '📞', label: '電話' },
+];
 ---
 
 <!doctype html>
@@ -14,184 +56,249 @@ const initial = shop.name.charAt(0);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
     <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
-    <title>友だち追加（デモ）｜{shop.name}</title>
+    <title>LINEトーク（デモ）｜{shop.name}</title>
   </head>
   <body>
-    <main class="screen">
-      <div class="card">
-        <span class="badge">PORTFOLIO DEMO</span>
-        <div class="oa">
-          <div class="avatar">{initial}</div>
-          <p class="oa-name">{shop.name}</p>
-          <p class="oa-sub">{shop.tagline}・LINE公式アカウント</p>
+    <div class="phone">
+      <!-- ヘッダー -->
+      <header class="bar">
+        <a class="back" href={back} aria-label="サイトに戻る">‹</a>
+        <div class="avatar">{initial}</div>
+        <div class="title">
+          <p class="name">{shop.name}</p>
+          <p class="sub">{shop.tagline}・公式アカウント</p>
         </div>
+        <span class="demo">DEMO</span>
+      </header>
 
-        <button id="addBtn" class="add" type="button">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
-            ><path
-              d="M12 2C6.48 2 2 5.64 2 10.13c0 4.02 3.55 7.39 8.35 8.03.32.07.77.21.88.49.1.25.07.64.03.89l-.14.85c-.04.25-.2.99.86.54 1.06-.45 5.7-3.36 7.78-5.75C21.1 13.66 22 11.99 22 10.13 22 5.64 17.52 2 12 2z"
-            ></path></svg
-          >
-          友だち追加
-        </button>
+      <!-- トーク本文 -->
+      <main class="chat" id="chat">
+        <p class="daysep"><span>今日</span></p>
+        <p class="sys">これはポートフォリオ用のデモです。実際のLINE公式アカウントではありません。下のメニューを押すと、お店とのやり取りを再現します。</p>
+      </main>
 
-        <p id="added" class="added" hidden>
-          ✓ 友だち追加しました（デモ）。本番ではLINEのトーク画面から、予約・お問い合わせ・最新のお知らせ受け取りができます。
-        </p>
-
-        <p class="note">
-          これはポートフォリオ用のデモ画面です。実際のLINE公式アカウントはまだ作成していません。<br />
-          本番では、このボタンが本物の「友だち追加」画面につながります。
-        </p>
-
-        <a class="back" href={back}>← サイトに戻る</a>
+      <!-- 入力欄（飾り） -->
+      <div class="inputbar">
+        <span class="fake-input">メッセージを入力（デモ）</span>
       </div>
-    </main>
 
-    <script>
-      const btn = document.getElementById('addBtn');
-      const added = document.getElementById('added');
-      if (btn && added) {
-        btn.addEventListener('click', () => {
-          (btn as HTMLButtonElement).disabled = true;
-          btn.classList.add('done');
-          btn.textContent = '✓ 追加済み（デモ）';
-          added.hidden = false;
-        });
+      <!-- リッチメニュー -->
+      <nav class="richmenu" aria-label="リッチメニュー">
+        {
+          MENU.map((m) => (
+            <button class="rm" type="button" data-action={m.key}>
+              <span class="rm-ico">{m.icon}</span>
+              <span class="rm-label">{m.label}</span>
+            </button>
+          ))
+        }
+      </nav>
+    </div>
+
+    <p class="hint">↑ リッチメニュー（LINEのトーク下部に出るボタン）。タップで予約・定休日などの自動応答を体験できます。</p>
+
+    <script define:vars={{ SCRIPT, initial }}>
+      const chat = document.getElementById('chat');
+
+      function nowTime() {
+        const d = new Date();
+        return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
       }
+      function scrollDown() {
+        chat.scrollTop = chat.scrollHeight;
+      }
+
+      function addBubble(msg) {
+        if (msg.who === 'info') {
+          const el = document.createElement('div');
+          el.className = 'info';
+          el.textContent = msg.text;
+          chat.appendChild(el);
+          scrollDown();
+          return;
+        }
+        const row = document.createElement('div');
+        row.className = 'row ' + (msg.who === 'me' ? 'me' : 'shop');
+        const av = msg.who === 'shop' ? `<div class="b-av">${initial}</div>` : '';
+        const link = msg.link
+          ? `<a class="b-link" href="${msg.link.url}" target="_blank" rel="noopener">${msg.link.label} ›</a>`
+          : '';
+        const read = msg.who === 'me' ? '<span class="read">既読</span>' : '';
+        row.innerHTML =
+          av +
+          `<div class="b-wrap"><div class="bubble">${msg.text.replace(/\n/g, '<br>')}${link}</div></div>` +
+          `<span class="time">${read}${nowTime()}</span>`;
+        chat.appendChild(row);
+        scrollDown();
+      }
+
+      function typing() {
+        const row = document.createElement('div');
+        row.className = 'row shop typing';
+        row.innerHTML = `<div class="b-av">${initial}</div><div class="b-wrap"><div class="bubble dots"><span></span><span></span><span></span></div></div>`;
+        chat.appendChild(row);
+        scrollDown();
+        return row;
+      }
+
+      // メッセージ列を順番に再生（店舗の返信はタイピング演出つき）
+      let busy = false;
+      function play(seq) {
+        if (busy) return;
+        busy = true;
+        let i = 0;
+        function next() {
+          if (i >= seq.length) {
+            busy = false;
+            return;
+          }
+          const msg = seq[i++];
+          if (msg.who === 'me' || msg.who === 'info') {
+            addBubble(msg);
+            setTimeout(next, 450);
+          } else {
+            const t = typing();
+            setTimeout(() => {
+              t.remove();
+              addBubble(msg);
+              setTimeout(next, 600);
+            }, 800);
+          }
+        }
+        next();
+      }
+
+      // 初回あいさつ＋お知らせ
+      play(SCRIPT.intro);
+
+      document.querySelectorAll('.rm').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const key = btn.getAttribute('data-action');
+          if (SCRIPT.actions[key]) play(SCRIPT.actions[key]);
+        });
+      });
     </script>
 
-    <style>
+    <!-- JSで動的生成する吹き出しにも当てるため is:global（このページ専用のクラス名なので他へ影響しない） -->
+    <style is:global>
       :root {
-        --line-green: #06c755;
-        --line-green-d: #05a847;
+        --line: #06c755;
+        --bg: #8aabd4; /* LINEトーク背景の青み */
       }
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
       body {
-        font-family:
-          system-ui,
-          -apple-system,
-          'Segoe UI',
-          'Hiragino Kaku Gothic ProN',
-          'Noto Sans JP',
-          Meiryo,
-          sans-serif;
+        font-family: system-ui, -apple-system, 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', Meiryo, sans-serif;
         background: #e9edf0;
         color: #1f2a30;
-        line-height: 1.8;
-      }
-      .screen {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 24px;
-      }
-      .card {
-        width: 100%;
-        max-width: 380px;
-        background: #fff;
-        border-radius: 18px;
-        padding: 28px 24px 24px;
-        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.12);
-        text-align: center;
-        position: relative;
-      }
-      .badge {
-        position: absolute;
-        top: 14px;
-        right: 14px;
-        font-size: 10px;
-        letter-spacing: 0.12em;
-        font-weight: 700;
-        color: #8a949b;
-        border: 1px solid #d7dde1;
-        border-radius: 999px;
-        padding: 3px 9px;
-      }
-      .oa {
-        padding: 14px 0 22px;
-      }
-      .avatar {
-        width: 84px;
-        height: 84px;
-        margin: 0 auto 14px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--line-green), var(--line-green-d));
-        color: #fff;
-        font-size: 38px;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .oa-name {
-        font-size: 20px;
-        font-weight: 700;
-      }
-      .oa-sub {
-        font-size: 12.5px;
-        color: #7a848b;
-        margin-top: 2px;
-      }
-      .add {
-        width: 100%;
-        border: 0;
-        cursor: pointer;
-        background: var(--line-green);
-        color: #fff;
-        font-size: 16px;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-        padding: 14px;
-        border-radius: 10px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        transition: filter 0.15s;
-      }
-      .add svg {
-        width: 20px;
-        height: 20px;
-      }
-      .add:hover {
-        filter: brightness(0.95);
-      }
-      .add.done {
-        background: #9bb3a6;
-        cursor: default;
-      }
-      .added {
-        margin-top: 14px;
-        font-size: 13px;
-        color: #1b7a3e;
-        background: #e8f7ee;
-        border: 1px solid #bfe6cd;
-        border-radius: 10px;
-        padding: 12px 14px;
-        text-align: left;
-      }
-      .note {
-        margin-top: 18px;
-        font-size: 12px;
-        color: #8a949b;
         line-height: 1.7;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px 12px 28px;
       }
-      .back {
-        display: inline-block;
-        margin-top: 18px;
-        font-size: 13px;
-        color: var(--line-green-d);
-        text-decoration: none;
+      .phone {
+        width: 100%;
+        max-width: 400px;
+        height: min(760px, 86vh);
+        background: var(--bg);
+        border-radius: 22px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 20px 55px rgba(0, 0, 0, 0.22);
       }
-      .back:hover {
-        text-decoration: underline;
+      /* ヘッダー */
+      .bar {
+        background: #f7f8fa;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-bottom: 1px solid #e2e6ea;
       }
+      .back { text-decoration: none; color: #3a4750; font-size: 26px; line-height: 1; padding: 0 4px; }
+      .bar .avatar {
+        width: 38px; height: 38px; border-radius: 50%;
+        background: linear-gradient(135deg, var(--line), #05a847);
+        color: #fff; font-weight: 700; font-size: 18px;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      }
+      .title { flex: 1; min-width: 0; }
+      .name { font-size: 15px; font-weight: 700; }
+      .sub { font-size: 11px; color: #8a949b; }
+      .demo {
+        font-size: 9px; font-weight: 700; letter-spacing: .1em; color: #8a949b;
+        border: 1px solid #cfd6db; border-radius: 999px; padding: 2px 7px;
+      }
+      /* トーク */
+      .chat { flex: 1; overflow-y: auto; padding: 14px 12px 18px; }
+      .daysep { text-align: center; margin: 4px 0 14px; }
+      .daysep span {
+        background: rgba(0, 0, 0, .18); color: #fff; font-size: 11px;
+        padding: 2px 12px; border-radius: 999px;
+      }
+      .sys, .info {
+        background: rgba(255, 255, 255, .82); color: #4a565d; font-size: 12px;
+        border-radius: 10px; padding: 9px 12px; margin: 0 auto 14px; max-width: 90%; text-align: center;
+      }
+      .info { background: #fffbe6; color: #7a601f; text-align: left; white-space: pre-line; border: 1px solid #f0e2a8; }
+      .row { display: flex; align-items: flex-end; gap: 6px; margin-bottom: 12px; }
+      .row.shop { justify-content: flex-start; }
+      .row.me { justify-content: flex-end; }
+      .b-av {
+        width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+        background: linear-gradient(135deg, var(--line), #05a847);
+        color: #fff; font-size: 14px; font-weight: 700;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .b-wrap { max-width: 74%; }
+      .bubble {
+        position: relative; padding: 9px 12px; font-size: 14px; border-radius: 14px;
+        word-break: break-word; white-space: normal;
+      }
+      .row.shop .bubble { background: #fff; color: #1f2a30; border-top-left-radius: 4px; }
+      .row.me .bubble { background: var(--line); color: #fff; border-top-right-radius: 4px; }
+      .b-link {
+        display: inline-block; margin-top: 8px; font-size: 13px; font-weight: 600;
+        color: #1769d6; text-decoration: none; background: #eef4fd;
+        padding: 6px 10px; border-radius: 8px;
+      }
+      .time { font-size: 10px; color: rgba(255, 255, 255, .9); display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+      .row.shop .time { color: rgba(255, 255, 255, .85); align-items: flex-start; }
+      .read { color: rgba(255, 255, 255, .9); }
+      .row.me .time { text-align: right; }
+      /* タイピング */
+      .dots { display: inline-flex; gap: 4px; padding: 12px 14px; }
+      .dots span {
+        width: 7px; height: 7px; border-radius: 50%; background: #c2ccd2; display: inline-block;
+        animation: blink 1.2s infinite both;
+      }
+      .dots span:nth-child(2) { animation-delay: .2s; }
+      .dots span:nth-child(3) { animation-delay: .4s; }
+      @keyframes blink { 0%, 80%, 100% { opacity: .3; } 40% { opacity: 1; } }
+      /* 入力欄（飾り） */
+      .inputbar { background: #f7f8fa; padding: 8px 12px; border-top: 1px solid #e2e6ea; }
+      .fake-input {
+        display: block; background: #fff; border: 1px solid #e2e6ea; border-radius: 999px;
+        color: #aab2b8; font-size: 13px; padding: 8px 14px;
+      }
+      /* リッチメニュー */
+      .richmenu {
+        display: grid; grid-template-columns: repeat(5, 1fr);
+        background: #06402b; border-top: 2px solid #06c755;
+      }
+      .rm {
+        border: 0; background: transparent; color: #fff; cursor: pointer;
+        padding: 12px 4px 13px; display: flex; flex-direction: column; align-items: center; gap: 5px;
+        border-right: 1px solid rgba(255, 255, 255, .12);
+      }
+      .rm:last-child { border-right: 0; }
+      .rm:active { background: rgba(255, 255, 255, .12); }
+      .rm-ico { font-size: 20px; }
+      .rm-label { font-size: 10.5px; line-height: 1.2; }
+      .hint { max-width: 400px; margin-top: 14px; font-size: 12px; color: #6b7780; text-align: center; line-height: 1.7; }
+      @media (prefers-reduced-motion: reduce) { .dots span { animation: none; } }
     </style>
   </body>
 </html>
