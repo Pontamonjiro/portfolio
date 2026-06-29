@@ -19,6 +19,12 @@ const { shop } = Astro.props;
       <table class="info-table">
         <tr><th>店名</th><td>{shop.name}</td></tr>
         <tr><th>住所</th><td>{shop.address}</td></tr>
+        {shop.access && (
+          <tr>
+            <th>アクセス</th>
+            <td>{shop.access}</td>
+          </tr>
+        )}
         <tr>
           <th>受付時間</th>
           <td>

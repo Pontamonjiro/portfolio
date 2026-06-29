@@ -4,7 +4,7 @@ import type { Shop } from './types';
 // ── 新規店舗を作るときは、このファイルを複製して値とテーマ色を差し替えるだけ ──
 // 差し替える主なもの: name / tagline / tel / lineUrl / mapUrl / mapEmbed / address / theme / voices
 export const ashimomi: Shop = {
-  name: 'あしもみ本舗',
+  name: '癒し処 あしもみ本舗',
   tagline: '全身マッサージ',
   description:
     'お一人おひとりの体に合わせて、肩・背中・腰から脚先まで全身をていねいにほぐす全身マッサージ。1.5〜2時間たっぷり、わかりやすい一律料金のお店です。',
@@ -14,10 +14,12 @@ export const ashimomi: Shop = {
   // 本番のLINE公式アカウント友だち追加URL（ベーシックID @791pdfns から生成）。
   // ※トーク画面デモは /ashimomi/line/ に残置（リンクは本物のLINEへ）。
   lineUrl: 'https://line.me/R/ti/p/@791pdfns',
-  mapUrl: 'https://maps.google.com/?q=REPLACE',
-  mapEmbed: '', // Googleビジネスの埋め込みiframeのsrc。空ならプレースホルダー
+  mapUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('栃木県那須塩原市下永田3-3-81')}`,
+  // APIキー不要の埋め込み（output=embed）。和風版の店舗案内に実地図が出る
+  mapEmbed: `https://maps.google.com/maps?q=${encodeURIComponent('栃木県那須塩原市下永田3-3-81')}&z=16&output=embed`,
 
-  address: '〒000-0000 ○○県○○市○○町0-0-0',
+  address: '〒329-2712 栃木県那須塩原市下永田3-3-81',
+  access: '西那須野駅 東口から徒歩約7分',
   hoursNote: '10:00 〜 20:00（受付）',
   closedNote: '不定休',
   payment: '現金のみ',
@@ -38,7 +40,7 @@ export const ashimomi: Shop = {
     sub: '#6f8c6a', // 若竹
   },
 
-  logo: { pre: 'あし', accent: 'もみ', post: '本舗' },
+  logo: { pre: '癒し処 あし', accent: 'もみ', post: '本舗' },
 
   hero: {
     eyebrow: '全身マッサージ',

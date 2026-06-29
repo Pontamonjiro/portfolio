@@ -46,6 +46,8 @@ export type Shop = {
   mapEmbed: string;
   /** 住所 */
   address: string;
+  /** アクセス（最寄り駅・徒歩分数など）。任意 */
+  access?: string;
   /** 営業時間の目安 */
   hoursNote: string;
   /** 定休日の note */
