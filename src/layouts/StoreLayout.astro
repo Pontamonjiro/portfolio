@@ -1,0 +1,198 @@
+---
+// 店舗サイト共通レイアウト（旧 Base.astro 相当）。
+// <head>・フォント・color-scheme・CSS変数(:root)・共通リセット＋共有ユーティリティを持つ。
+// テーマ色は shop.theme を <body> のインラインCSS変数として流し込み、:root の既定値を上書きする。
+import type { Shop } from '../data/shops/types';
+
+interface Props {
+  shop: Shop;
+}
+
+const { shop } = Astro.props;
+const t = shop.theme;
+// 既存HTMLの変数名（--sumi 等）に合わせて流し込む。
+const themeVars = [
+  `--sumi:${t.sumi}`,
+  `--washi:${t.washi}`,
+  `--washi-2:${t.washi2}`,
+  `--kakishibu:${t.accent}`,
+  `--kakishibu-d:${t.accentDark}`,
+  `--wakatake:${t.sub}`,
+].join(';');
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light only" />
+    <title>{shop.name}｜{shop.tagline}</title>
+    <meta name="description" content={shop.description} />
+    <meta property="og:title" content={`${shop.name}｜${shop.tagline}`} />
+    <meta property="og:description" content={shop.description} />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body style={themeVars}>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    color-scheme: light only;
+    --sumi: #1c2a30; /* 藍墨 */
+    --washi: #f4eee2; /* 生成り和紙 */
+    --washi-2: #ece3d2;
+    --kakishibu: #9c5a34; /* 柿渋 */
+    --kakishibu-d: #834628;
+    --wakatake: #6f8c6a; /* 若竹 */
+    --kincha: #c69a52; /* 金茶 */
+    --line-green: #06c755; /* LINE公式カラー */
+    --ink-soft: #3a4a50;
+    --line: rgba(28, 42, 48, 0.14);
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    color: var(--sumi);
+    background: var(--washi);
+    line-height: 1.9;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    padding-bottom: 64px; /* スマホ下部固定バー分 */
+  }
+  h1,
+  h2,
+  h3,
+  .mincho {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(156, 90, 52, 0.04), transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(111, 140, 106, 0.05), transparent 45%);
+  }
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* セクション見出し（共有） */
+  section {
+    padding: 88px 0;
+    position: relative;
+  }
+  .sec-head {
+    margin-bottom: 54px;
+  }
+  .sec-num {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    color: var(--wakatake);
+    display: block;
+    margin-bottom: 12px;
+  }
+  .sec-head h2 {
+    font-size: clamp(26px, 3.4vw, 36px);
+    line-height: 1.5;
+  }
+  .sec-head .en {
+    font-size: 12px;
+    letter-spacing: 0.28em;
+    color: var(--ink-soft);
+    opacity: 0.6;
+    display: block;
+    margin-top: 10px;
+  }
+
+  /* ボタン共通 */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    text-decoration: none;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    padding: 14px 26px;
+    border-radius: 2px;
+    transition: 0.2s;
+    font-weight: 500;
+  }
+  .btn svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+  .btn-line {
+    background: var(--line-green);
+    color: #fff;
+  }
+  .btn-line:hover {
+    filter: brightness(0.93);
+    transform: translateY(-1px);
+  }
+  .btn-tel {
+    background: var(--kakishibu);
+    color: var(--washi);
+  }
+  .btn-tel:hover {
+    background: var(--kakishibu-d);
+    transform: translateY(-1px);
+  }
+  .btn-map {
+    border: 1px solid var(--sumi);
+    color: var(--sumi);
+    background: transparent;
+  }
+  .btn-map:hover {
+    background: var(--sumi);
+    color: var(--washi);
+  }
+
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--wakatake);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 820px) {
+    section {
+      padding: 64px 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto;
+    }
+  }
+</style>

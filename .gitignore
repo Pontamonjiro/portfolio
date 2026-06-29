@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # Claude Code ローカル設定
 .claude/
+
+# Playwright(動作確認)の一時出力
+.playwright-mcp/

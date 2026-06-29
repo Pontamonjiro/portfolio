@@ -1,0 +1,81 @@
+---
+import type { Shop } from '../../data/shops/types';
+
+interface Props {
+  shop: Shop;
+}
+
+const { shop } = Astro.props;
+---
+
+<section class="reserve" id="reserve">
+  <div class="wrap">
+    <h2>ご予約・お問い合わせ</h2>
+    <p>完全予約制です。LINEまたはお電話で、お気軽にどうぞ。</p>
+    <div class="reserve-btns">
+      <a href={shop.lineUrl} class="btn btn-line" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"
+          ><path
+            d="M12 2C6.48 2 2 5.64 2 10.13c0 4.02 3.55 7.39 8.35 8.03.32.07.77.21.88.49.1.25.07.64.03.89l-.14.85c-.04.25-.2.99.86.54 1.06-.45 5.7-3.36 7.78-5.75C21.1 13.66 22 11.99 22 10.13 22 5.64 17.52 2 12 2z"
+          ></path></svg
+        >
+        LINEで予約
+      </a>
+      <a href={`tel:${shop.tel}`} class="btn btn-tel">
+        <svg viewBox="0 0 24 24" fill="currentColor"
+          ><path
+            d="M6.62 10.79a15.5 15.5 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24 11.4 11.4 0 003.57.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"
+          ></path></svg
+        >
+        電話する
+      </a>
+      <a href={shop.mapUrl} class="btn btn-map" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"
+          ><path
+            d="M12 2a7 7 0 00-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z"
+          ></path></svg
+        >
+        地図・営業状況
+      </a>
+    </div>
+    <p class="note">当日の営業状況・臨時休業・最新料金は、Googleマップ／LINEでご確認いただけます。</p>
+  </div>
+</section>
+
+<style>
+  .reserve {
+    background: var(--washi-2);
+    color: var(--sumi);
+    text-align: center;
+  }
+  .reserve h2 {
+    font-size: clamp(24px, 3.2vw, 34px);
+    color: var(--sumi);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .reserve p {
+    color: var(--ink-soft);
+    margin-bottom: 36px;
+    font-size: 16px;
+  }
+  .reserve-btns {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .reserve-btns .btn {
+    flex: 1;
+    min-width: 200px;
+    padding: 18px 24px;
+    font-size: 16px;
+  }
+  .reserve .note {
+    margin-top: 26px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+</style>

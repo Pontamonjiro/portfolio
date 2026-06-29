@@ -1,0 +1,82 @@
+---
+import type { Shop } from '../../data/shops/types';
+
+interface Props {
+  shop: Shop;
+}
+
+const { shop } = Astro.props;
+---
+
+<section class="petband">
+  <div class="wrap">
+    <svg class="paw" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <ellipse cx="6" cy="9" rx="2.1" ry="2.8"></ellipse>
+      <ellipse cx="10.6" cy="6.2" rx="2.1" ry="2.9"></ellipse>
+      <ellipse cx="15.4" cy="6.2" rx="2.1" ry="2.9"></ellipse>
+      <ellipse cx="19" cy="9" rx="2.1" ry="2.8"></ellipse>
+      <path
+        d="M12.5 11c-2.8 0-5 2-5.6 4.3-.4 1.6.8 3 2.5 3 1 0 1.9-.4 3.1-.4s2.1.4 3.1.4c1.7 0 2.9-1.4 2.5-3C17.5 13 15.3 11 12.5 11z"
+      ></path>
+    </svg>
+    <div class="pet-copy">
+      <h2>大切な家族（ペット）と<span class="accent">いっしょに</span>どうぞ。</h2>
+      <p>{shop.petNote}</p>
+      <div class="pet-points">
+        <span>🐾 ペット同伴 相談可</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .petband {
+    background: #eaf0e6;
+  }
+  .petband .wrap {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+  }
+  .petband .paw {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    color: var(--wakatake);
+  }
+  .petband .pet-copy {
+    max-width: 640px;
+  }
+  .petband h2 {
+    font-size: clamp(22px, 3vw, 30px);
+    color: var(--sumi);
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .petband h2 .accent {
+    color: var(--wakatake);
+  }
+  .petband p {
+    font-size: 15.5px;
+    color: var(--ink-soft);
+  }
+  .petband .pet-points {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .petband .pet-points span {
+    background: var(--washi);
+    border: 1px solid var(--wakatake);
+    color: #4d6648;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+</style>

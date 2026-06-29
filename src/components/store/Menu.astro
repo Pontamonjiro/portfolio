@@ -1,0 +1,185 @@
+---
+import type { Shop } from '../../data/shops/types';
+
+interface Props {
+  shop: Shop;
+}
+
+const { shop } = Astro.props;
+const sheetId = shop.pricing.sheetId;
+const sheetName = shop.pricing.sheetName;
+// 未接続/取得失敗時のフォールバック。店舗データに無ければ空配列。
+const fallback = shop.fallbackMenu ?? [];
+---
+
+<section id="menu">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">其の二</span>
+      <h2>メニュー</h2>
+      <span class="en">MENU</span>
+    </div>
+    <!-- 料金はGoogleスプレッドシートから動的読み込み（店主がスマホで編集→自動反映）。
+         未接続時は fallback がそのまま表示される。 -->
+    <div class="menu-list" id="menuList" aria-live="polite"></div>
+    <p class="menu-note" id="menuNote">
+      ※
+      表示はメニューの目安です。最新の料金・キャンペーン情報は、LINEまたはお電話でお気軽にお尋ねください。回数券もご用意しています。
+    </p>
+  </div>
+</section>
+
+<script define:vars={{ sheetId, sheetName, fallback }}>
+  // ================================================================
+  // 料金をGoogleスプレッドシートから読み込む（既存HTMLのJSロジックを踏襲）
+  //   A列=メニュー名 / B列=料金 / C列=説明 / D列=表示（"非表示"で除外）
+  //   sheetId が 'REPLACE' / 取得失敗時は fallback を表示。
+  // ================================================================
+  const listEl = document.getElementById('menuList');
+
+  function esc(s) {
+    return (s || '').replace(
+      /[&<>"]/g,
+      (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]
+    );
+  }
+
+  function render(items, fromSheet) {
+    if (!items.length) {
+      items = fallback;
+      fromSheet = false;
+    }
+    listEl.innerHTML = items
+      .map(
+        (it) => `
+      <div class="menu-item">
+        <div class="m-name">${esc(it.name)}</div>
+        <div class="m-price">${esc(it.price)}</div>
+        <div class="m-desc">${esc(it.desc)}</div>
+      </div>`
+      )
+      .join('');
+    if (fromSheet) {
+      const note = document.createElement('p');
+      note.className = 'menu-source';
+      note.textContent = '料金はリアルタイムで更新されます';
+      listEl.after(note);
+    }
+  }
+
+  // 簡易CSVパーサ（ダブルクオート・カンマ・改行対応）
+  function parseCSV(text) {
+    const rows = [];
+    let row = [],
+      cur = '',
+      q = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (q) {
+        if (c === '"') {
+          if (text[i + 1] === '"') {
+            cur += '"';
+            i++;
+          } else q = false;
+        } else cur += c;
+      } else {
+        if (c === '"') q = true;
+        else if (c === ',') {
+          row.push(cur);
+          cur = '';
+        } else if (c === '\n') {
+          row.push(cur);
+          rows.push(row);
+          row = [];
+          cur = '';
+        } else if (c !== '\r') cur += c;
+      }
+    }
+    if (cur !== '' || row.length) {
+      row.push(cur);
+      rows.push(row);
+    }
+    return rows;
+  }
+
+  async function loadPricing() {
+    if (sheetId === 'REPLACE') {
+      render(fallback, false);
+      return;
+    }
+    listEl.innerHTML = '<div class="menu-loading">料金を読み込み中…</div>';
+    try {
+      const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('fetch failed');
+      const rows = parseCSV(await res.text());
+      const items = rows
+        .slice(1) // ヘッダー行を飛ばす
+        .filter((r) => (r[0] || '').trim() && (r[3] || '').trim() !== '非表示')
+        .map((r) => ({ name: (r[0] || '').trim(), price: (r[1] || '').trim(), desc: (r[2] || '').trim() }));
+      render(items, true);
+    } catch (e) {
+      render(fallback, false);
+    }
+  }
+  loadPricing();
+</script>
+
+<style>
+  .menu-list {
+    border-top: 2px solid var(--sumi);
+  }
+  .menu-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px 30px;
+    align-items: baseline;
+    padding: 26px 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  .menu-item .m-name {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 20px;
+  }
+  .menu-item .m-desc {
+    grid-column: 1;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    margin-top: 6px;
+  }
+  .menu-item .m-price {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 22px;
+    color: var(--kakishibu);
+    white-space: nowrap;
+  }
+  .menu-item .m-price small {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-left: 3px;
+  }
+  .menu-note {
+    margin-top: 22px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    background: var(--washi-2);
+    padding: 14px 18px;
+    border-radius: 2px;
+    border-left: 3px solid var(--wakatake);
+  }
+  .menu-loading {
+    padding: 30px 6px;
+    color: var(--ink-soft);
+    font-size: 14px;
+    text-align: center;
+    border-top: 2px solid var(--sumi);
+  }
+  .menu-source {
+    margin-top: 10px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    opacity: 0.6;
+    text-align: right;
+  }
+</style>

@@ -1,0 +1,76 @@
+---
+// あしもみ本舗 店舗サイト。StoreLayout に各セクションコンポーネントを並べるだけ。
+// 別店舗を作るときは src/data/shops/ に新しいデータを足し、このページを複製して import を差し替える。
+import StoreLayout from '../../layouts/StoreLayout.astro';
+import Header from '../../components/store/Header.astro';
+import Hero from '../../components/store/Hero.astro';
+import PetBand from '../../components/store/PetBand.astro';
+import Kodawari from '../../components/store/Kodawari.astro';
+import Menu from '../../components/store/Menu.astro';
+import Voices from '../../components/store/Voices.astro';
+import Access from '../../components/store/Access.astro';
+import ReserveCTA from '../../components/store/ReserveCTA.astro';
+import StickyBar from '../../components/store/StickyBar.astro';
+import { ashimomi as shop } from '../../data/shops/ashimomi';
+
+const year = new Date().getFullYear();
+---
+
+<StoreLayout shop={shop}>
+  <Header shop={shop} />
+  <Hero shop={shop} />
+  <PetBand shop={shop} />
+  <Kodawari />
+  <Menu shop={shop} />
+  <Voices shop={shop} />
+  <Access shop={shop} />
+  <ReserveCTA shop={shop} />
+
+  <footer>
+    <div class="wrap foot-inner">
+      <div class="logo">
+        {
+          shop.logo ? (
+            <>
+              {shop.logo.pre}
+              <span>{shop.logo.accent}</span>
+              {shop.logo.post}
+            </>
+          ) : (
+            shop.name
+          )
+        }
+      </div>
+      <div>© {year} {shop.name}</div>
+    </div>
+  </footer>
+
+  <StickyBar shop={shop} />
+</StoreLayout>
+
+<style>
+  footer {
+    background: var(--washi-2);
+    color: var(--ink-soft);
+    padding: 44px 0 56px;
+    font-size: 13px;
+    border-top: 1px solid var(--line);
+  }
+  .foot-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .foot-inner .logo {
+    color: var(--sumi);
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 700;
+    font-size: 21px;
+    letter-spacing: 0.12em;
+  }
+  .foot-inner .logo span {
+    color: var(--kakishibu);
+  }
+</style>

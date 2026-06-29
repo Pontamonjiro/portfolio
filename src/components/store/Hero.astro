@@ -1,0 +1,163 @@
+---
+import type { Shop } from '../../data/shops/types';
+
+interface Props {
+  shop: Shop;
+}
+
+const { shop } = Astro.props;
+const eyebrow = shop.hero?.eyebrow ?? shop.tagline;
+const title = shop.hero?.title ?? `その日の足に、<br>その日の手を。`;
+const titleSub = shop.hero?.titleSub ?? '― 二人だけの、小さなおもてなし ―';
+const lead = shop.hero?.lead ?? shop.description;
+---
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">{eyebrow}</span>
+      <h1>
+        <Fragment set:html={title} />
+        <span class="sub">{titleSub}</span>
+      </h1>
+      <p class="lead">{lead}</p>
+      <div class="hero-actions">
+        <a href={shop.lineUrl} class="btn btn-line" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"
+            ><path
+              d="M12 2C6.48 2 2 5.64 2 10.13c0 4.02 3.55 7.39 8.35 8.03.32.07.77.21.88.49.1.25.07.64.03.89l-.14.85c-.04.25-.2.99.86.54 1.06-.45 5.7-3.36 7.78-5.75C21.1 13.66 22 11.99 22 10.13 22 5.64 17.52 2 12 2z"
+            ></path></svg
+          >
+          LINEで予約
+        </a>
+        <a href={`tel:${shop.tel}`} class="btn btn-tel">
+          <svg viewBox="0 0 24 24" fill="currentColor"
+            ><path
+              d="M6.62 10.79a15.5 15.5 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24 11.4 11.4 0 003.57.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"
+            ></path></svg
+          >
+          電話する
+        </a>
+      </div>
+    </div>
+    <div class="foot-art">
+      <svg class="foot" viewBox="0 0 200 300" role="img" aria-label="足裏のツボ図イラスト">
+        <path
+          d="M100 14 C60 14 44 44 44 86 C44 120 52 150 50 184 C48 214 38 232 40 256 C42 282 64 292 100 292 C136 292 158 282 160 256 C162 232 152 214 150 184 C148 150 156 120 156 86 C156 44 140 14 100 14 Z"
+          fill="none"
+          stroke="#1c2a30"
+          stroke-width="2"
+          opacity=".55"></path>
+        <ellipse cx="100" cy="60" rx="40" ry="34" fill="none" stroke="#1c2a30" stroke-width="1" opacity=".25"></ellipse>
+        <line x1="58" y1="150" x2="142" y2="150" stroke="#1c2a30" stroke-width="1" opacity=".18"></line>
+        <line x1="55" y1="200" x2="145" y2="200" stroke="#1c2a30" stroke-width="1" opacity=".18"></line>
+        <circle class="pt" cx="100" cy="56" r="6" style="animation-delay:.1s"></circle>
+        <circle class="pt" cx="78" cy="88" r="5" style="animation-delay:.25s"></circle>
+        <circle class="pt" cx="122" cy="90" r="5" style="animation-delay:.4s"></circle>
+        <circle class="pt" cx="92" cy="128" r="5" style="animation-delay:.55s"></circle>
+        <circle class="pt" cx="116" cy="166" r="6" style="animation-delay:.7s"></circle>
+        <circle class="pt" cx="80" cy="178" r="5" style="animation-delay:.85s"></circle>
+        <circle class="pt" cx="100" cy="222" r="6" style="animation-delay:1s"></circle>
+        <circle class="pt" cx="118" cy="250" r="5" style="animation-delay:1.15s"></circle>
+        <circle class="pt" cx="82" cy="248" r="5" style="animation-delay:1.3s"></circle>
+      </svg>
+      <p class="foot-caption">足は、からだの地図。</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    padding: 90px 0 100px;
+    overflow: hidden;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 50px;
+    align-items: center;
+  }
+  .eyebrow {
+    display: inline-block;
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    color: var(--kakishibu);
+    border: 1px solid var(--kakishibu);
+    border-radius: 2px;
+    padding: 5px 14px;
+    margin-bottom: 26px;
+  }
+  .hero h1 {
+    font-size: clamp(34px, 5.4vw, 58px);
+    line-height: 1.4;
+    font-weight: 700;
+  }
+  .hero h1 .sub {
+    display: block;
+    font-size: 0.42em;
+    color: var(--ink-soft);
+    letter-spacing: 0.16em;
+    margin-top: 14px;
+    font-weight: 500;
+  }
+  .hero p.lead {
+    margin: 30px 0 36px;
+    font-size: 17px;
+    color: var(--ink-soft);
+    max-width: 30em;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .foot-art {
+    position: relative;
+  }
+  .foot-art svg.foot {
+    width: 100%;
+    max-width: 330px;
+    margin: 0 auto;
+    display: block;
+    filter: drop-shadow(0 18px 40px rgba(28, 42, 48, 0.12));
+  }
+  .foot-art .pt {
+    fill: var(--kakishibu);
+    opacity: 0;
+    animation: pop 0.5s ease forwards;
+  }
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: scale(0.2);
+    }
+    to {
+      opacity: 0.9;
+      transform: scale(1);
+    }
+  }
+  .foot-caption {
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--ink-soft);
+    margin-top: 18px;
+  }
+
+  @media (max-width: 820px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+    }
+    .foot-art {
+      order: -1;
+      max-width: 260px;
+      margin: 0 auto;
+    }
+    .hero-actions .btn {
+      flex: 1;
+      min-width: 140px;
+    }
+  }
+</style>
