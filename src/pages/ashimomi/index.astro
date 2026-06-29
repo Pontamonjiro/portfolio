@@ -25,14 +25,17 @@ const leafSvg = `<svg viewBox="0 0 64 40" fill="currentColor" aria-hidden="true"
   <ellipse cx="43" cy="25" rx="6" ry="2.3" transform="rotate(24 43 25)"/>
 </svg>`;
 
-// 肉球（ペット同伴の売り用）
-const pawSvg = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+// 肉球（ペット同伴の売り用）。set:html注入はscope属性が付かずCSSサイズ指定が効かないので width/height を直接指定
+const pawSvg = `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
   <ellipse cx="6" cy="9" rx="2.1" ry="2.8"/>
   <ellipse cx="10.6" cy="6.2" rx="2.1" ry="2.9"/>
   <ellipse cx="15.4" cy="6.2" rx="2.1" ry="2.9"/>
   <ellipse cx="19" cy="9" rx="2.1" ry="2.8"/>
   <path d="M12.5 11c-2.8 0-5 2-5.6 4.3-.4 1.6.8 3 2.5 3 1 0 1.9-.4 3.1-.4s2.1.4 3.1.4c1.7 0 2.9-1.4 2.5-3C17.5 13 15.3 11 12.5 11z"/>
 </svg>`;
+
+// LINEアイコン（メイン連絡先として目立たせる用）
+const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 5.64 2 10.13c0 4.02 3.55 7.39 8.35 8.03.32.07.77.21.88.49.1.25.07.64.03.89l-.14.85c-.04.25-.2.99.86.54 1.06-.45 5.7-3.36 7.78-5.75C21.1 13.66 22 11.99 22 10.13 22 5.64 17.52 2 12 2z"/></svg>`;
 ---
 
 <!doctype html>
@@ -58,7 +61,7 @@ const pawSvg = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <!-- ヘッダー -->
     <header class="hd">
       <div class="hd-logo">{shop.name}</div>
-      <a class="hd-cta" href={shop.lineUrl} target="_blank" rel="noopener">LINEで予約</a>
+      <a class="hd-cta" href={shop.lineUrl} target="_blank" rel="noopener"><Fragment set:html={lineIcon} />LINEで予約</a>
     </header>
 
     <!-- ヒーロー -->
@@ -70,8 +73,8 @@ const pawSvg = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <h1 class="hero-title" set:html={shop.hero?.title ?? shop.name} />
         <p class="hero-sub">{shop.hero?.titleSub}</p>
         <div class="hero-btns">
-          <a class="btn btn-fill" href={shop.lineUrl} target="_blank" rel="noopener">LINEで予約する</a>
-          <a class="btn btn-line2" href={`tel:${tel}`}>お電話：{telDisp}</a>
+          <a class="btn btn-line-g" href={shop.lineUrl} target="_blank" rel="noopener"><Fragment set:html={lineIcon} />LINEで予約する</a>
+          <a class="btn btn-line2" href={`tel:${tel}`}>お電話でも可</a>
         </div>
       </div>
     </section>
@@ -102,7 +105,7 @@ const pawSvg = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <span class="yen">¥</span>{(menu?.price ?? '').replace(/[¥円]/g, '')}
             <small>（税込・一律）</small>
           </div>
-          <a class="btn btn-fill sm" href={shop.lineUrl} target="_blank" rel="noopener">このメニューを予約</a>
+          <a class="btn btn-line-g sm" href={shop.lineUrl} target="_blank" rel="noopener"><Fragment set:html={lineIcon} />LINEで予約する</a>
         </div>
       </div>
       <p class="menu-note">
@@ -128,15 +131,17 @@ const pawSvg = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       </div>
     </section>
 
-    <!-- ペット同伴（売り）：写真は背景として敷く（他セクションと同じ雰囲気扱い） -->
+    <!-- ペット同伴（売り）：看板犬の実写真を横並びで見せる -->
     <section class="pet">
-      <img class="pet-bg" src={img('shiba.jpg')} alt="" loading="lazy" />
-      <div class="pet-veil"></div>
-      <div class="pet-inner">
+      <div class="pet-text">
         <p class="sec-en">With your pet</p>
-        <h2 class="sec-jp">大切な家族（ペット）も、ご一緒に。</h2>
-        <p class="pet-lead">{shop.petNote}</p>
+        <h2 class="sec-jp">大切な家族（ペット）も、<br />ご一緒に。</h2>
+        <p>{shop.petNote}</p>
         <span class="pet-badge"><Fragment set:html={pawSvg} /> ペット同伴 相談可</span>
+      </div>
+      <div class="pet-photo">
+        <img src={img('dog-sleep.jpg')} alt="お店の看板犬（黒柴）" loading="lazy" />
+        <span class="pet-cap"><Fragment set:html={pawSvg} /> 看板犬</span>
       </div>
     </section>
 
@@ -163,8 +168,11 @@ const pawSvg = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <h2 class="sec-jp">アクセス</h2>
         <p class="access-addr">{shop.address}</p>
         {shop.access && <p class="access-sub">{shop.access}</p>}
-        <p class="access-sub">受付 {shop.hoursNote}／{shop.closedNote}</p>
-        <a class="btn btn-ghost" href={shop.mapUrl} target="_blank" rel="noopener">Googleマップで開く</a>
+        <p class="access-sub">受付 {shop.hoursNote}</p>
+        <p class="access-note">
+          {shop.closedNote}です。当日の営業状況・臨時休業は <strong>Googleマップ</strong> でご確認ください。
+        </p>
+        <a class="btn btn-ghost" href={shop.mapUrl} target="_blank" rel="noopener">Googleマップで営業状況を見る</a>
       </div>
       <div class="access-map">
         {
@@ -180,12 +188,21 @@ const pawSvg = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <div class="leaf"><Fragment set:html={leafSvg} /></div>
       <p class="ft-logo">{shop.name}</p>
       <p class="ft-tagline">{shop.tagline}</p>
-      <a class="ft-tel" href={`tel:${tel}`}>☎ {telDisp}</a>
+      <p class="ft-lead">ご予約・お問い合わせは <strong>LINE</strong> がいちばん簡単です。</p>
       <div class="ft-btns">
-        <a class="btn btn-fill" href={shop.lineUrl} target="_blank" rel="noopener">LINEで予約</a>
+        <a class="btn btn-line-g lg" href={shop.lineUrl} target="_blank" rel="noopener">
+          <Fragment set:html={lineIcon} />LINEで予約・相談
+        </a>
       </div>
+      <div class="ft-sub">
+        <a class="btn btn-ghost" href={shop.mapUrl} target="_blank" rel="noopener">Googleマップ（営業状況）</a>
+        <a class="ft-tel" href={`tel:${tel}`}>お電話：{telDisp}</a>
+      </div>
+      <p class="ft-note">
+        {shop.closedNote}です。当日の営業状況・臨時休業は Googleマップ でご確認ください。
+      </p>
       <a class="ft-back" href={back}>和風版のサイト（アーカイブ）→</a>
-      <p class="ft-demo">※ 掲載写真はイメージです（フリー素材）。</p>
+      <p class="ft-demo">※ 掲載写真はイメージです（看板犬はお店の実写真／その他はフリー素材）。</p>
     </footer>
 
     <style>
@@ -198,6 +215,8 @@ const pawSvg = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         --brown-d: #835f3c;
         --gold: #c7ad84;
         --line: rgba(60, 52, 43, 0.14);
+        --line-green: #06c755;
+        --line-green-d: #05a847;
       }
       * { box-sizing: border-box; margin: 0; padding: 0; }
       body {
@@ -221,13 +240,19 @@ const pawSvg = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
 
       /* ボタン */
       .btn {
-        display: inline-flex; align-items: center; justify-content: center;
-        font-size: 14px; letter-spacing: 0.08em; text-decoration: none;
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        font-size: 14px; letter-spacing: 0.08em; text-decoration: none; white-space: nowrap;
         padding: 14px 30px; border-radius: 2px; transition: 0.25s; font-weight: 400;
       }
+      .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
       .btn-fill { background: var(--brown); color: #fff; }
       .btn-fill:hover { background: var(--brown-d); }
       .btn-fill.sm { padding: 11px 24px; font-size: 13px; }
+      /* LINE（メイン連絡先）を目立たせる緑ボタン */
+      .btn-line-g { background: var(--line-green); color: #fff; box-shadow: 0 8px 22px rgba(6, 199, 85, 0.28); }
+      .btn-line-g:hover { background: var(--line-green-d); }
+      .btn-line-g.sm { padding: 11px 24px; font-size: 13px; }
+      .btn-line-g.lg { padding: 17px 42px; font-size: 16px; }
       .btn-line2 { border: 1px solid #fff; color: #fff; }
       .btn-line2:hover { background: rgba(255, 255, 255, 0.15); }
       .btn-ghost { border: 1px solid var(--brown); color: var(--brown); }
@@ -244,11 +269,13 @@ const pawSvg = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         letter-spacing: 0.14em; color: #fff; text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
       }
       .hd-cta {
-        font-size: 13px; letter-spacing: 0.08em; text-decoration: none; color: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.7); padding: 9px 18px; border-radius: 2px;
-        backdrop-filter: blur(2px);
+        display: inline-flex; align-items: center; gap: 7px;
+        font-size: 13px; letter-spacing: 0.06em; text-decoration: none; color: #fff; font-weight: 500;
+        background: var(--line-green); padding: 9px 18px; border-radius: 999px;
+        box-shadow: 0 6px 18px rgba(6, 199, 85, 0.3);
       }
-      .hd-cta:hover { background: rgba(255, 255, 255, 0.18); }
+      .hd-cta:hover { background: var(--line-green-d); }
+      .hd-cta svg { width: 16px; height: 16px; }
 
       /* ヒーロー */
       .hero { position: relative; height: min(88vh, 760px); overflow: hidden; display: flex; align-items: center; }
@@ -328,31 +355,38 @@ const pawSvg = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       .ft { text-align: center; background: var(--cream2); padding: clamp(60px, 8vw, 96px) 24px 70px; }
       .ft-logo { font-family: 'Shippori Mincho', serif; font-weight: 700; font-size: 26px; letter-spacing: 0.14em; }
       .ft-tagline { color: var(--muted); font-size: 13px; letter-spacing: 0.16em; margin-top: 6px; }
+      .ft-lead { margin: 22px 0 18px; font-size: 15px; color: var(--ink); }
+      .ft-lead strong { color: var(--line-green-d); font-weight: 700; }
       .ft-tel {
-        display: inline-block; font-family: 'Cormorant Garamond', serif; font-size: 34px;
-        color: var(--brown-d); text-decoration: none; letter-spacing: 0.04em; margin: 24px 0 8px;
+        font-size: 14px; color: var(--brown-d); text-decoration: none;
+        border-bottom: 1px solid var(--gold); padding-bottom: 2px;
       }
-      .ft-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin: 16px 0 26px; }
+      .ft-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin: 0 0 18px; }
+      .ft-sub { display: flex; gap: 18px; justify-content: center; align-items: center; flex-wrap: wrap; }
+      .ft-note {
+        max-width: 32em; margin: 20px auto 0; font-size: 12.5px; color: var(--muted); line-height: 1.8;
+      }
       .ft-info { font-size: 13px; color: #5c5346; line-height: 1.9; }
       .ft-back { display: inline-block; margin-top: 26px; font-size: 13px; color: var(--brown); text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 2px; }
       .ft-demo { margin-top: 28px; font-size: 11px; color: #a99c88; }
 
-      /* ペット同伴（写真を背景に敷く＝ヒーロー/Aboutと同じ"写真は雰囲気"の扱い） */
-      .pet {
-        position: relative; overflow: hidden; text-align: center; color: #fff;
-        padding: clamp(78px, 12vw, 136px) 24px;
+      /* ペット同伴（看板犬の実写真を横並びで見せる） */
+      .pet { display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; background: var(--cream2); }
+      .pet-text { padding: clamp(48px, 7vw, 96px) clamp(28px, 6vw, 80px); align-self: center; }
+      .pet-text h2 { margin-bottom: 18px; }
+      .pet-text p { color: #5c5346; font-size: 15px; }
+      .pet-photo { position: relative; min-height: 480px; }
+      .pet-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
+      .pet-cap {
+        position: absolute; left: 18px; bottom: 18px; display: inline-flex; align-items: center; gap: 6px;
+        background: rgba(255, 255, 255, 0.92); color: var(--brown-d);
+        font-size: 12px; letter-spacing: 0.1em; padding: 6px 14px; border-radius: 999px;
       }
-      .pet-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 38%; }
-      .pet-veil { position: absolute; inset: 0; background: linear-gradient(rgba(38, 28, 20, 0.5), rgba(38, 28, 20, 0.64)); }
-      .pet-inner { position: relative; z-index: 2; }
-      .pet .sec-en { color: #f1e4d0; }
-      .pet .sec-jp { color: #fff; text-shadow: 0 2px 16px rgba(0, 0, 0, 0.25); }
-      .pet-lead { max-width: 30em; margin: 18px auto 0; color: #f2e9dc; font-size: 15px; }
+      .pet-cap svg { width: 14px; height: 14px; }
       .pet-badge {
-        display: inline-flex; align-items: center; gap: 8px; margin-top: 26px;
-        background: rgba(255, 255, 255, 0.96); border: 1px solid rgba(255, 255, 255, 0.5); color: var(--brown-d);
-        padding: 10px 22px; border-radius: 999px; font-size: 13px; letter-spacing: 0.06em;
-        white-space: nowrap;
+        display: inline-flex; align-items: center; gap: 8px; margin-top: 24px;
+        background: #fff; border: 1px solid var(--gold); color: var(--brown-d);
+        padding: 10px 22px; border-radius: 999px; font-size: 13px; letter-spacing: 0.06em; white-space: nowrap;
       }
       .pet-badge svg { width: 17px; height: 17px; }
 
@@ -361,11 +395,17 @@ const pawSvg = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       .access-text { padding: clamp(48px, 7vw, 90px) clamp(28px, 6vw, 72px); align-self: center; }
       .access-addr { font-size: 16px; margin-top: 6px; }
       .access-sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
-      .access-text .btn { margin-top: 26px; }
+      .access-note {
+        margin-top: 16px; font-size: 13px; color: var(--brown-d); line-height: 1.8;
+        background: var(--cream); border-left: 3px solid var(--gold); padding: 11px 15px; border-radius: 2px;
+      }
+      .access-text .btn { margin-top: 20px; }
       .access-map { position: relative; min-height: 380px; }
       .access-map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
       @media (max-width: 760px) {
+        .pet { grid-template-columns: 1fr; }
+        .pet-photo { min-height: 380px; order: -1; }
         .access { grid-template-columns: 1fr; }
         .access-map { min-height: 300px; }
         .menu-card { grid-template-columns: 1fr; }
