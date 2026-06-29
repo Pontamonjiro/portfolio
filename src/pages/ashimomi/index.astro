@@ -98,9 +98,6 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
         <div class="menu-body">
           <h3 class="menu-name">{menu?.name}</h3>
           <p class="menu-desc">{menu?.desc}</p>
-          <div class="menu-meta">
-            <span>所要 1.5〜2時間</span><span class="dot">•</span><span>{shop.payment}</span>
-          </div>
           <div class="menu-price">
             <span class="yen">¥</span>{(menu?.price ?? '').replace(/[¥円]/g, '')}
             <small>（税込・一律）</small>
@@ -108,10 +105,6 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
           <a class="btn btn-line-g sm" href={shop.lineUrl} target="_blank" rel="noopener"><Fragment set:html={lineIcon} />LINEで予約する</a>
         </div>
       </div>
-      <p class="menu-note">
-        ※
-        料金はわかりやすい一律制です。当日の空き状況・最新のご案内はLINEまたはお電話でお気軽にどうぞ。
-      </p>
     </section>
 
     <!-- 店内・について -->
@@ -199,8 +192,6 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       <p class="ft-note">
         {shop.closedNote}です。当日の営業状況・臨時休業は Googleマップ でご確認ください。
       </p>
-      <a class="ft-back" href={back}>和風版のサイト（アーカイブ）→</a>
-      <p class="ft-demo">※ 掲載写真はイメージです（看板犬はお店の実写真／その他はフリー素材）。</p>
     </footer>
 
     <style>
@@ -300,7 +291,7 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       .concept-lead { max-width: 30em; margin: 22px auto 0; color: #5c5346; font-size: 16px; }
 
       /* メニュー */
-      .menu { background: var(--cream2); padding: clamp(60px, 8vw, 100px) 24px; }
+      .menu { background: var(--cream); padding: clamp(74px, 9vw, 118px) 24px; }
       .menu-head { text-align: center; margin-bottom: 46px; }
       .menu-card {
         max-width: 880px; margin: 0 auto; background: #fff;
@@ -334,7 +325,7 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       .about-points li::before { content: '✦'; position: absolute; left: 0; color: var(--gold); }
 
       /* Voices */
-      .voices { text-align: center; padding: clamp(60px, 8vw, 100px) 24px; background: var(--cream); }
+      .voices { text-align: center; padding: clamp(74px, 9vw, 118px) 24px; background: var(--cream); }
       .voice-grid {
         max-width: 1000px; margin: 44px auto 0; display: grid;
         grid-template-columns: repeat(3, 1fr); gap: 26px;
@@ -369,9 +360,9 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       .ft-demo { margin-top: 28px; font-size: 11px; color: #a99c88; }
 
       /* ペット同伴（看板犬の写真を背景に敷く＝黒オーバーレイ＋白文字） */
-      .pet { position: relative; overflow: hidden; text-align: center; color: #fff; padding: clamp(80px, 13vw, 150px) 24px; }
+      .pet { position: relative; overflow: hidden; text-align: center; color: #fff; padding: clamp(58px, 8vw, 92px) 24px; }
       .pet-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
-      .pet-veil { position: absolute; inset: 0; background: linear-gradient(rgba(28, 22, 16, 0.5), rgba(28, 22, 16, 0.66)); }
+      .pet-veil { position: absolute; inset: 0; background: linear-gradient(rgba(30, 24, 18, 0.42), rgba(30, 24, 18, 0.54)); }
       .pet-inner { position: relative; z-index: 2; }
       .pet .sec-en { color: #f1e4d0; }
       .pet .sec-jp { color: #fff; text-shadow: 0 2px 16px rgba(0, 0, 0, 0.3); }
@@ -384,7 +375,7 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       .pet-badge svg { width: 16px; height: 16px; }
 
       /* アクセス（地図） */
-      .access { display: grid; grid-template-columns: 0.92fr 1.08fr; align-items: stretch; background: var(--cream2); }
+      .access { display: grid; grid-template-columns: 0.92fr 1.08fr; align-items: stretch; background: var(--cream); }
       .access-text { padding: clamp(48px, 7vw, 90px) clamp(28px, 6vw, 72px); align-self: center; }
       .access-addr { font-size: 16px; margin-top: 6px; }
       .access-sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
