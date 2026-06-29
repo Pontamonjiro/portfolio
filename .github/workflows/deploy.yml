@@ -1,0 +1,40 @@
+# Private なソースリポから、Astro のビルド成果物(dist/)を
+# Public な公開リポ(GitHub Pages)へデプロイするワークフロー。
+#
+# 事前準備（README / CLAUDE.md 参照）:
+#   1. Public な公開リポを作る（例: <user>/portfolio-pages）。そこの Settings > Pages で公開元を gh-pages ブランチに設定。
+#   2. 書き込み権限を持つ Personal Access Token (PAT, repo スコープ) を発行。
+#   3. このソースリポの Settings > Secrets and variables > Actions に
+#      PAGES_DEPLOY_TOKEN という名前で PAT を登録。
+#   4. 下の external_repository を実際の <user>/<public-repo> に書き換える。
+name: Deploy to Pages repo
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Deploy dist to public Pages repo
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.PAGES_DEPLOY_TOKEN }}
+          external_repository: your-name/portfolio-pages # ← 書き換える
+          publish_branch: gh-pages
+          publish_dir: ./dist
