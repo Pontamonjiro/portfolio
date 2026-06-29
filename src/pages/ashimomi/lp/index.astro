@@ -1,0 +1,310 @@
+---
+// 【試作】あしもみ本舗の内容を「写真主役・上品」スタイルで作ったLP版。
+// 既存の和風版(/ashimomi/)とは別ページ。デザインの方向性確認用のプロトタイプ。
+// 写真はフリー素材(Pexels/商用可)のダミー。本番は実店舗の写真に差し替える。
+import { ashimomi as shop } from '../../../data/shops/ashimomi';
+
+const B = import.meta.env.BASE_URL;
+const img = (name: string) => `${B}images/lp/${name}`;
+const back = `${B}ashimomi/`;
+
+const menu = shop.fallbackMenu?.[0];
+const tel = shop.tel;
+// ダミー番号(全部0)はそれっぽく整形して表示（本番は実番号に差し替え）
+const telDisp = /^0+$/.test(tel)
+  ? '000-0000-0000'
+  : tel.replace(/(\d{2,4})(\d{3,4})(\d{4})$/, '$1-$2-$3');
+
+// 装飾用の小さなボタニカル（左右対称の葉）
+const leafSvg = `<svg viewBox="0 0 64 40" fill="currentColor" aria-hidden="true">
+  <circle cx="32" cy="5" r="2.2"/>
+  <path d="M32 8 C32 19 32 30 32 39" stroke="currentColor" stroke-width="1" fill="none"/>
+  <ellipse cx="23" cy="15" rx="7.5" ry="2.6" transform="rotate(-28 23 15)"/>
+  <ellipse cx="41" cy="15" rx="7.5" ry="2.6" transform="rotate(28 41 15)"/>
+  <ellipse cx="21" cy="25" rx="6" ry="2.3" transform="rotate(-24 21 25)"/>
+  <ellipse cx="43" cy="25" rx="6" ry="2.3" transform="rotate(24 43 25)"/>
+</svg>`;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light only" />
+    <link rel="icon" type="image/svg+xml" href={`${B}favicon.svg`} />
+    <title>{shop.name}｜{shop.tagline}（LP試作）</title>
+    <meta name="description" content={shop.description} />
+    <meta name="robots" content="noindex" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Shippori+Mincho:wght@500;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- ヘッダー -->
+    <header class="hd">
+      <div class="hd-logo">{shop.name}</div>
+      <a class="hd-cta" href={shop.lineUrl} target="_blank" rel="noopener">LINEで予約</a>
+    </header>
+
+    <!-- ヒーロー -->
+    <section class="hero">
+      <img class="hero-img" src={img('6187431.jpg')} alt="" />
+      <div class="hero-veil"></div>
+      <div class="hero-inner">
+        <p class="eyebrow">{shop.tagline}</p>
+        <h1 class="hero-title" set:html={shop.hero?.title ?? shop.name} />
+        <p class="hero-sub">{shop.hero?.titleSub}</p>
+        <div class="hero-btns">
+          <a class="btn btn-fill" href={shop.lineUrl} target="_blank" rel="noopener">LINEで予約する</a>
+          <a class="btn btn-line2" href={`tel:${tel}`}>お電話：{telDisp}</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- コンセプト -->
+    <section class="concept">
+      <div class="leaf"><Fragment set:html={leafSvg} /></div>
+      <p class="sec-en">CONCEPT</p>
+      <h2 class="sec-jp">心と体を、ほどく時間。</h2>
+      <p class="concept-lead">{shop.hero?.lead ?? shop.description}</p>
+    </section>
+
+    <!-- メニュー -->
+    <section class="menu">
+      <div class="menu-head">
+        <p class="sec-en">MENU</p>
+        <h2 class="sec-jp">メニュー</h2>
+      </div>
+      <div class="menu-card">
+        <div class="menu-photo"><img src={img('37719647.jpg')} alt="" loading="lazy" /></div>
+        <div class="menu-body">
+          <h3 class="menu-name">{menu?.name}</h3>
+          <p class="menu-desc">{menu?.desc}</p>
+          <div class="menu-meta">
+            <span>所要 1.5〜2時間</span><span class="dot">•</span><span>{shop.payment}</span>
+          </div>
+          <div class="menu-price">
+            <span class="yen">¥</span>{(menu?.price ?? '').replace(/[¥円]/g, '')}
+            <small>（税込・一律）</small>
+          </div>
+          <a class="btn btn-fill sm" href={shop.lineUrl} target="_blank" rel="noopener">このメニューを予約</a>
+        </div>
+      </div>
+      <p class="menu-note">
+        ※
+        料金はわかりやすい一律制です。当日の空き状況・最新のご案内はLINEまたはお電話でお気軽にどうぞ。
+      </p>
+    </section>
+
+    <!-- 店内・について -->
+    <section class="about">
+      <div class="about-photo"><img src={img('19695981.jpg')} alt="" loading="lazy" /></div>
+      <div class="about-text">
+        <p class="sec-en">ABOUT</p>
+        <h2 class="sec-jp">その日の体に、<br />合わせて。</h2>
+        <p>
+          決まった手順をなぞるのではなく、お話を伺い、体に触れて、その日の状態に合わせて圧と時間を調整します。肩・背中・腰から脚先まで、全身をていねいに。
+        </p>
+        <ul class="about-points">
+          <li>オーダーメイドの全身もみほぐし</li>
+          <li>受付 {shop.hoursNote}</li>
+          <li>{shop.petNote}</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- お客様の声 -->
+    <section class="voices">
+      <p class="sec-en">VOICE</p>
+      <h2 class="sec-jp">お客様の声</h2>
+      <div class="voice-grid">
+        {
+          shop.voices.slice(0, 3).map((v) => (
+            <figure class="voice">
+              <blockquote>{v.quote}</blockquote>
+              <figcaption>― {v.who}</figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- 連絡先フッター -->
+    <footer class="ft">
+      <div class="leaf"><Fragment set:html={leafSvg} /></div>
+      <p class="ft-logo">{shop.name}</p>
+      <p class="ft-tagline">{shop.tagline}</p>
+      <a class="ft-tel" href={`tel:${tel}`}>☎ {telDisp}</a>
+      <div class="ft-btns">
+        <a class="btn btn-fill" href={shop.lineUrl} target="_blank" rel="noopener">LINEで予約</a>
+        <a class="btn btn-ghost" href={shop.mapUrl} target="_blank" rel="noopener">地図・営業状況</a>
+      </div>
+      <p class="ft-info">{shop.address}<br />受付 {shop.hoursNote}／{shop.closedNote}</p>
+      <a class="ft-back" href={back}>和風版のサイトを見る →</a>
+      <p class="ft-demo">※ ポートフォリオ用の試作。写真はフリー素材（Pexels）のダミーです。</p>
+    </footer>
+
+    <style>
+      :root {
+        --cream: #f6f0e7;
+        --cream2: #efe5d6;
+        --ink: #3c342b;
+        --muted: #8c7e6c;
+        --brown: #a47d54;
+        --brown-d: #835f3c;
+        --gold: #c7ad84;
+        --line: rgba(60, 52, 43, 0.14);
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: 'Noto Sans JP', sans-serif;
+        color: var(--ink);
+        background: var(--cream);
+        line-height: 1.95;
+        font-weight: 300;
+        -webkit-font-smoothing: antialiased;
+      }
+      img { display: block; max-width: 100%; }
+      .mincho, h1, h2, h3 { font-family: 'Shippori Mincho', serif; font-weight: 600; }
+      .sec-en {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 14px; letter-spacing: 0.42em; color: var(--brown);
+        text-transform: uppercase; margin-bottom: 10px;
+      }
+      .sec-jp { font-family: 'Shippori Mincho', serif; font-size: clamp(22px, 3.2vw, 30px); line-height: 1.5; }
+      .leaf { color: var(--gold); width: 46px; margin: 0 auto 14px; }
+      .leaf svg { width: 100%; height: auto; }
+
+      /* ボタン */
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 14px; letter-spacing: 0.08em; text-decoration: none;
+        padding: 14px 30px; border-radius: 2px; transition: 0.25s; font-weight: 400;
+      }
+      .btn-fill { background: var(--brown); color: #fff; }
+      .btn-fill:hover { background: var(--brown-d); }
+      .btn-fill.sm { padding: 11px 24px; font-size: 13px; }
+      .btn-line2 { border: 1px solid #fff; color: #fff; }
+      .btn-line2:hover { background: rgba(255, 255, 255, 0.15); }
+      .btn-ghost { border: 1px solid var(--brown); color: var(--brown); }
+      .btn-ghost:hover { background: var(--brown); color: #fff; }
+
+      /* ヘッダー */
+      .hd {
+        position: absolute; top: 0; left: 0; right: 0; z-index: 5;
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 22px clamp(20px, 5vw, 56px);
+      }
+      .hd-logo {
+        font-family: 'Shippori Mincho', serif; font-weight: 700; font-size: 20px;
+        letter-spacing: 0.14em; color: #fff; text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+      }
+      .hd-cta {
+        font-size: 13px; letter-spacing: 0.08em; text-decoration: none; color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.7); padding: 9px 18px; border-radius: 2px;
+        backdrop-filter: blur(2px);
+      }
+      .hd-cta:hover { background: rgba(255, 255, 255, 0.18); }
+
+      /* ヒーロー */
+      .hero { position: relative; height: min(88vh, 760px); overflow: hidden; display: flex; align-items: center; }
+      .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      .hero-veil {
+        position: absolute; inset: 0;
+        background: linear-gradient(90deg, rgba(40, 30, 20, 0.55), rgba(40, 30, 20, 0.12) 60%, transparent),
+          linear-gradient(0deg, rgba(40, 30, 20, 0.35), transparent 40%);
+      }
+      .hero-inner { position: relative; z-index: 2; color: #fff; padding: 0 clamp(24px, 7vw, 90px); max-width: 720px; }
+      .hero .eyebrow {
+        font-family: 'Cormorant Garamond', serif; letter-spacing: 0.3em; font-size: 15px;
+        color: #f3e3cf; margin-bottom: 18px; text-transform: none;
+      }
+      .hero-title {
+        font-family: 'Shippori Mincho', serif; font-weight: 600;
+        font-size: clamp(34px, 6vw, 62px); line-height: 1.45; text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+      }
+      .hero-sub { margin-top: 16px; font-size: 15px; letter-spacing: 0.1em; color: #f0e6d8; }
+      .hero-btns { margin-top: 34px; display: flex; gap: 14px; flex-wrap: wrap; }
+
+      /* コンセプト */
+      .concept { text-align: center; padding: clamp(64px, 9vw, 110px) 24px; background: var(--cream); }
+      .concept-lead { max-width: 30em; margin: 22px auto 0; color: #5c5346; font-size: 16px; }
+
+      /* メニュー */
+      .menu { background: var(--cream2); padding: clamp(60px, 8vw, 100px) 24px; }
+      .menu-head { text-align: center; margin-bottom: 46px; }
+      .menu-card {
+        max-width: 880px; margin: 0 auto; background: #fff;
+        display: grid; grid-template-columns: 0.9fr 1.1fr; overflow: hidden;
+        border-radius: 3px; box-shadow: 0 24px 60px rgba(60, 45, 30, 0.1);
+      }
+      .menu-photo { position: relative; min-height: 300px; }
+      .menu-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      .menu-body { padding: clamp(28px, 4vw, 46px); }
+      .menu-name { font-size: 24px; margin-bottom: 12px; }
+      .menu-desc { color: var(--muted); font-size: 14.5px; }
+      .menu-meta { margin-top: 14px; font-size: 13px; color: var(--muted); letter-spacing: 0.04em; }
+      .menu-meta .dot { margin: 0 10px; color: var(--gold); }
+      .menu-price {
+        font-family: 'Cormorant Garamond', serif; font-size: 46px; color: var(--brown-d);
+        margin: 14px 0 22px; line-height: 1; display: flex; align-items: baseline; gap: 2px;
+      }
+      .menu-price .yen { font-size: 26px; }
+      .menu-price small { font-family: 'Noto Sans JP'; font-size: 12px; color: var(--muted); margin-left: 10px; font-weight: 300; }
+      .menu-note { max-width: 880px; margin: 22px auto 0; font-size: 12.5px; color: var(--muted); text-align: center; }
+
+      /* About */
+      .about { display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; }
+      .about-photo { min-height: 420px; position: relative; }
+      .about-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      .about-text { padding: clamp(48px, 7vw, 96px) clamp(28px, 6vw, 80px); align-self: center; }
+      .about-text h2 { margin-bottom: 20px; }
+      .about-text p { color: #5c5346; font-size: 15px; }
+      .about-points { list-style: none; margin-top: 24px; display: grid; gap: 10px; }
+      .about-points li { position: relative; padding-left: 22px; font-size: 14px; color: #5c5346; }
+      .about-points li::before { content: '✦'; position: absolute; left: 0; color: var(--gold); }
+
+      /* Voices */
+      .voices { text-align: center; padding: clamp(60px, 8vw, 100px) 24px; background: var(--cream); }
+      .voice-grid {
+        max-width: 1000px; margin: 44px auto 0; display: grid;
+        grid-template-columns: repeat(3, 1fr); gap: 26px;
+      }
+      .voice {
+        background: #fff; border: 1px solid var(--line); border-radius: 3px;
+        padding: 34px 26px; text-align: left;
+      }
+      .voice blockquote {
+        font-family: 'Shippori Mincho', serif; font-size: 16px; line-height: 1.9; color: var(--ink);
+      }
+      .voice blockquote::before { content: '“'; color: var(--gold); font-size: 28px; margin-right: 2px; }
+      .voice figcaption { margin-top: 16px; font-size: 12.5px; color: var(--muted); letter-spacing: 0.06em; }
+
+      /* Footer */
+      .ft { text-align: center; background: var(--cream2); padding: clamp(60px, 8vw, 96px) 24px 70px; }
+      .ft-logo { font-family: 'Shippori Mincho', serif; font-weight: 700; font-size: 26px; letter-spacing: 0.14em; }
+      .ft-tagline { color: var(--muted); font-size: 13px; letter-spacing: 0.16em; margin-top: 6px; }
+      .ft-tel {
+        display: inline-block; font-family: 'Cormorant Garamond', serif; font-size: 34px;
+        color: var(--brown-d); text-decoration: none; letter-spacing: 0.04em; margin: 24px 0 8px;
+      }
+      .ft-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin: 16px 0 26px; }
+      .ft-info { font-size: 13px; color: #5c5346; line-height: 1.9; }
+      .ft-back { display: inline-block; margin-top: 26px; font-size: 13px; color: var(--brown); text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 2px; }
+      .ft-demo { margin-top: 28px; font-size: 11px; color: #a99c88; }
+
+      @media (max-width: 760px) {
+        .menu-card { grid-template-columns: 1fr; }
+        .menu-photo { min-height: 240px; }
+        .about { grid-template-columns: 1fr; }
+        .about-photo { min-height: 300px; order: -1; }
+        .voice-grid { grid-template-columns: 1fr; }
+        .hero-btns .btn { flex: 1; }
+      }
+    </style>
+  </body>
+</html>
