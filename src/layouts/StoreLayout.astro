@@ -6,9 +6,11 @@ import type { Shop } from '../data/shops/types';
 
 interface Props {
   shop: Shop;
+  /** アーカイブ等で検索エンジンに載せたくない場合 true */
+  noindex?: boolean;
 }
 
-const { shop } = Astro.props;
+const { shop, noindex = false } = Astro.props;
 const t = shop.theme;
 // 既存HTMLの変数名（--sumi 等）に合わせて流し込む。
 const themeVars = [
@@ -27,6 +29,7 @@ const themeVars = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light only" />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
     <title>{shop.name}｜{shop.tagline}</title>
     <meta name="description" content={shop.description} />
