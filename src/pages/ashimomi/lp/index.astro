@@ -154,6 +154,25 @@ const pawSvg = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       </div>
     </section>
 
+    <!-- アクセス（地図埋め込み） -->
+    <section class="access">
+      <div class="access-text">
+        <p class="sec-en">Access</p>
+        <h2 class="sec-jp">アクセス</h2>
+        <p class="access-addr">{shop.address}</p>
+        {shop.access && <p class="access-sub">{shop.access}</p>}
+        <p class="access-sub">受付 {shop.hoursNote}／{shop.closedNote}</p>
+        <a class="btn btn-ghost" href={shop.mapUrl} target="_blank" rel="noopener">Googleマップで開く</a>
+      </div>
+      <div class="access-map">
+        {
+          shop.mapEmbed && (
+            <iframe src={shop.mapEmbed} loading="lazy" title={`${shop.name}の地図`} />
+          )
+        }
+      </div>
+    </section>
+
     <!-- 連絡先フッター -->
     <footer class="ft">
       <div class="leaf"><Fragment set:html={leafSvg} /></div>
@@ -162,13 +181,7 @@ const pawSvg = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <a class="ft-tel" href={`tel:${tel}`}>☎ {telDisp}</a>
       <div class="ft-btns">
         <a class="btn btn-fill" href={shop.lineUrl} target="_blank" rel="noopener">LINEで予約</a>
-        <a class="btn btn-ghost" href={shop.mapUrl} target="_blank" rel="noopener">地図・営業状況</a>
       </div>
-      <p class="ft-info">
-        {shop.address}<br />
-        {shop.access && (<>{shop.access}<br /></>)}
-        受付 {shop.hoursNote}／{shop.closedNote}
-      </p>
       <a class="ft-back" href={back}>和風版のサイトを見る →</a>
       <p class="ft-demo">※ ポートフォリオ用の試作。写真はフリー素材（Pexels）のダミーです。</p>
     </footer>
@@ -341,7 +354,18 @@ const pawSvg = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       }
       .pet-badge svg { width: 17px; height: 17px; }
 
+      /* アクセス（地図） */
+      .access { display: grid; grid-template-columns: 0.92fr 1.08fr; align-items: stretch; background: var(--cream2); }
+      .access-text { padding: clamp(48px, 7vw, 90px) clamp(28px, 6vw, 72px); align-self: center; }
+      .access-addr { font-size: 16px; margin-top: 6px; }
+      .access-sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
+      .access-text .btn { margin-top: 26px; }
+      .access-map { position: relative; min-height: 380px; }
+      .access-map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
       @media (max-width: 760px) {
+        .access { grid-template-columns: 1fr; }
+        .access-map { min-height: 300px; }
         .menu-card { grid-template-columns: 1fr; }
         .menu-photo { min-height: 240px; }
         .about { grid-template-columns: 1fr; }
