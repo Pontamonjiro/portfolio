@@ -11,9 +11,9 @@ export const ashimomi: Shop = {
 
   // ★ 本番では下を実値に差し替える（HTMLにベタ書きしない設計）
   tel: '0000000000',
-  // 【ダミー】ポートフォリオ用に、自サイト内のLINE友だち追加デモ(/ashimomi/line/)へ飛ばす。
-  // 本番では実際のLINE公式アカウントの友だち追加URL（https://lin.ee/xxxx）に差し替える。
-  lineUrl: `${import.meta.env.BASE_URL}ashimomi/line/`,
+  // 本番のLINE公式アカウント友だち追加URL（ベーシックID @791pdfns から生成）。
+  // ※トーク画面デモは /ashimomi/line/ に残置（リンクは本物のLINEへ）。
+  lineUrl: 'https://line.me/R/ti/p/@791pdfns',
   mapUrl: 'https://maps.google.com/?q=REPLACE',
   mapEmbed: '', // Googleビジネスの埋め込みiframeのsrc。空ならプレースホルダー
 
