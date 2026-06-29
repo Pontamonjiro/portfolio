@@ -23,8 +23,9 @@ src/
   components/
     WorkCard.astro    … TOPの作品カード
   pages/
-    index.astro       … ポートフォリオTOP（作品一覧）
-    works/<slug>.astro… 個別LP（sample-lp が雛形）
+    index.astro         … ポートフォリオTOP（作品一覧）
+    <slug>/index.astro  … 個別ページ。src/pages 直下にフォルダを1つ作る＝1ページ（URL /<slug>/）
+                          例: sample-lp/index.astro → /sample-lp/（雛形）
   styles/global.css   … 共通ベーススタイル
 public/               … そのまま配信される静的ファイル（画像・favicon等）
 .github/workflows/deploy.yml … GitHub Pages デプロイ（2リポ構成）
@@ -49,9 +50,10 @@ astro dev --background
 
 ## 新しいLP/ページの追加手順
 
-1. `src/pages/works/sample-lp.astro` を複製し、`<slug>.astro` にリネーム
-2. 中身を編集（`BaseLayout` に title / description を渡す）
-3. `src/data/works.ts` に作品を1件追加（slug を一致させる）
+1. `src/pages/sample-lp/` フォルダごと複製し、フォルダ名を `<slug>` にリネーム
+   （= 第一階層にフォルダを1つ作る。その中の `index.astro` がそのページ。URLは `/<slug>/`）
+2. `index.astro` の中身を編集（`BaseLayout` に title / description を渡す）
+3. `src/data/works.ts` に作品を1件追加（slug をフォルダ名と一致させる）→ TOPの一覧に出る
 4. 内部リンクは必ず `href('...')`（`src/site.config.ts`）経由にする → base パス変更に追従
 
 ## コーディング規約

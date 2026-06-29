@@ -1,8 +1,8 @@
 // ポートフォリオに並べる制作物（LP・ホームページ）の一覧。
-// 新しい作品を追加したら、ここに1件足して src/pages/works/ に該当ページを作る。
+// 新しい作品を追加したら、ここに1件足して src/pages/<slug>/index.astro を作る。
 
 export type Work = {
-  /** URLスラッグ（src/pages/works/<slug>.astro と対応） */
+  /** URLスラッグ（src/pages/<slug>/index.astro と対応。URLは /<slug>/） */
   slug: string;
   /** 作品名 */
   title: string;

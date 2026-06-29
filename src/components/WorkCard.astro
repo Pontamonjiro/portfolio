@@ -7,7 +7,7 @@ interface Props {
 }
 
 const { work } = Astro.props;
-const link = href(`works/${work.slug}/`);
+const link = href(`${work.slug}/`);
 ---
 
 <a class="card" href={link}>
