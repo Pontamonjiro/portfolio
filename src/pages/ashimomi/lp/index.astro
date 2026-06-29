@@ -24,6 +24,15 @@ const leafSvg = `<svg viewBox="0 0 64 40" fill="currentColor" aria-hidden="true"
   <ellipse cx="21" cy="25" rx="6" ry="2.3" transform="rotate(-24 21 25)"/>
   <ellipse cx="43" cy="25" rx="6" ry="2.3" transform="rotate(24 43 25)"/>
 </svg>`;
+
+// 肉球（ペット同伴の売り用）
+const pawSvg = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+  <ellipse cx="6" cy="9" rx="2.1" ry="2.8"/>
+  <ellipse cx="10.6" cy="6.2" rx="2.1" ry="2.9"/>
+  <ellipse cx="15.4" cy="6.2" rx="2.1" ry="2.9"/>
+  <ellipse cx="19" cy="9" rx="2.1" ry="2.8"/>
+  <path d="M12.5 11c-2.8 0-5 2-5.6 4.3-.4 1.6.8 3 2.5 3 1 0 1.9-.4 3.1-.4s2.1.4 3.1.4c1.7 0 2.9-1.4 2.5-3C17.5 13 15.3 11 12.5 11z"/>
+</svg>`;
 ---
 
 <!doctype html>
@@ -112,9 +121,18 @@ const leafSvg = `<svg viewBox="0 0 64 40" fill="currentColor" aria-hidden="true"
         <ul class="about-points">
           <li>オーダーメイドの全身もみほぐし</li>
           <li>受付 {shop.hoursNote}</li>
-          <li>{shop.petNote}</li>
+          <li>一律料金（¥{(menu?.price ?? '').replace(/[¥円]/g, '')}）でわかりやすく</li>
         </ul>
       </div>
+    </section>
+
+    <!-- ペット同伴（売り） -->
+    <section class="pet">
+      <div class="paw"><Fragment set:html={pawSvg} /></div>
+      <p class="sec-en">With your pet</p>
+      <h2 class="sec-jp">大切な家族（ペット）も、ご一緒に。</h2>
+      <p class="pet-lead">{shop.petNote}</p>
+      <span class="pet-badge"><Fragment set:html={pawSvg} /> ペット同伴 相談可</span>
     </section>
 
     <!-- お客様の声 -->
@@ -296,6 +314,24 @@ const leafSvg = `<svg viewBox="0 0 64 40" fill="currentColor" aria-hidden="true"
       .ft-info { font-size: 13px; color: #5c5346; line-height: 1.9; }
       .ft-back { display: inline-block; margin-top: 26px; font-size: 13px; color: var(--brown); text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 2px; }
       .ft-demo { margin-top: 28px; font-size: 11px; color: #a99c88; }
+
+      /* ペット同伴 */
+      .pet {
+        text-align: center;
+        padding: clamp(56px, 8vw, 96px) 24px;
+        background: #ece1cf;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+      .pet .paw { width: 44px; color: var(--brown); margin: 0 auto 16px; }
+      .pet .paw svg { width: 100%; height: auto; }
+      .pet-lead { max-width: 30em; margin: 18px auto 0; color: #5c5346; font-size: 15px; }
+      .pet-badge {
+        display: inline-flex; align-items: center; gap: 8px; margin-top: 26px;
+        background: #fff; border: 1px solid var(--gold); color: var(--brown-d);
+        padding: 10px 22px; border-radius: 999px; font-size: 13px; letter-spacing: 0.06em;
+      }
+      .pet-badge svg { width: 17px; height: 17px; }
 
       @media (max-width: 760px) {
         .menu-card { grid-template-columns: 1fr; }
