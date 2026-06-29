@@ -7,8 +7,8 @@ interface Props {
 
 const { shop } = Astro.props;
 const eyebrow = shop.hero?.eyebrow ?? shop.tagline;
-const title = shop.hero?.title ?? `その日の足に、<br>その日の手を。`;
-const titleSub = shop.hero?.titleSub ?? '― 二人だけの、小さなおもてなし ―';
+const title = shop.hero?.title ?? `その日の体に、<br>その日の手を。`;
+const titleSub = shop.hero?.titleSub ?? '― あなたに合わせた、全身もみほぐし ―';
 const lead = shop.hero?.lead ?? shop.description;
 ---
 
@@ -61,7 +61,7 @@ const lead = shop.hero?.lead ?? shop.description;
         <circle class="pt" cx="118" cy="250" r="5" style="animation-delay:1.15s"></circle>
         <circle class="pt" cx="82" cy="248" r="5" style="animation-delay:1.3s"></circle>
       </svg>
-      <p class="foot-caption">足は、からだの地図。</p>
+      <p class="foot-caption">つま先から、頭の先まで。</p>
     </div>
   </div>
 </section>
