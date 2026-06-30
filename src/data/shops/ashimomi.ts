@@ -14,12 +14,13 @@ export const ashimomi: Shop = {
   // 本番のLINE公式アカウント友だち追加URL（ベーシックID @791pdfns から生成）。
   // ※トーク画面デモは /ashimomi/line/ に残置（リンクは本物のLINEへ）。
   lineUrl: 'https://line.me/R/ti/p/@791pdfns',
-  mapUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('栃木県那須塩原市下永田3-3-81')}`,
-  // APIキー不要の埋め込み（output=embed）。和風版の店舗案内に実地図が出る
-  mapEmbed: `https://maps.google.com/maps?q=${encodeURIComponent('栃木県那須塩原市下永田3-3-81')}&z=16&output=embed`,
+  // ★ 住所はダミー化中（実番地が地図に出ないよう「那須塩原市」の広域にしている）
+  mapUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('栃木県那須塩原市')}`,
+  // APIキー不要の埋め込み（output=embed）。ダミー中は市の広域を表示
+  mapEmbed: `https://maps.google.com/maps?q=${encodeURIComponent('栃木県那須塩原市')}&z=13&output=embed`,
 
-  address: '〒329-2712 栃木県那須塩原市下永田3-3-81',
-  access: '西那須野駅 東口から徒歩約7分',
+  address: '〒000-0000 栃木県那須塩原市○○町0-0-0',
+  access: '○○駅から徒歩約0分',
   hoursNote: '10:00 〜 20:00（受付）',
   closedNote: '不定休',
   payment: '現金のみ',
