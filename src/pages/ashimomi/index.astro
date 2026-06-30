@@ -77,10 +77,11 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
           <a class="btn btn-line2" href={`tel:${tel}`}>お電話でも可</a>
         </div>
       </div>
+      <a class="hero-scroll" href="#concept" aria-label="下へスクロール"><span>Scroll</span></a>
     </section>
 
     <!-- コンセプト -->
-    <section class="concept">
+    <section class="concept" id="concept">
       <div class="leaf"><Fragment set:html={leafSvg} /></div>
       <p class="sec-en">CONCEPT</p>
       <h2 class="sec-jp">心と体を、ほどく時間。</h2>
@@ -196,8 +197,9 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
 
     <style>
       :root {
+        --paper: #fbf7ef;
         --cream: #f6f0e7;
-        --cream2: #efe5d6;
+        --cream2: #ece0cd;
         --ink: #3c342b;
         --muted: #8c7e6c;
         --brown: #a47d54;
@@ -222,6 +224,16 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
         font-family: 'Cormorant Garamond', serif;
         font-size: 14px; letter-spacing: 0.42em; color: var(--brown);
         text-transform: uppercase; margin-bottom: 10px;
+      }
+      /* 中央寄せ見出しは英字ラベルの両脇に金の飾り線を添える（統一感＋上品さ） */
+      .concept .sec-en, .menu-head .sec-en, .voices .sec-en, .pet .sec-en {
+        display: inline-flex; align-items: center; justify-content: center; gap: 14px;
+      }
+      .concept .sec-en::before, .concept .sec-en::after,
+      .menu-head .sec-en::before, .menu-head .sec-en::after,
+      .voices .sec-en::before, .voices .sec-en::after,
+      .pet .sec-en::before, .pet .sec-en::after {
+        content: ''; width: 28px; height: 1px; background: currentColor; opacity: 0.45;
       }
       .sec-jp { font-family: 'Shippori Mincho', serif; font-size: clamp(22px, 3.2vw, 30px); line-height: 1.5; }
       .leaf { color: var(--gold); width: 46px; margin: 0 auto 14px; }
@@ -265,6 +277,7 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       }
       .hd-cta:hover { background: rgba(255, 255, 255, 0.24); }
       .hd-cta svg { width: 15px; height: 15px; }
+      .hd-cta { white-space: nowrap; }
 
       /* ヒーロー */
       .hero { position: relative; height: min(88vh, 760px); overflow: hidden; display: flex; align-items: center; }
@@ -274,23 +287,39 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
         background: linear-gradient(90deg, rgba(40, 30, 20, 0.55), rgba(40, 30, 20, 0.12) 60%, transparent),
           linear-gradient(0deg, rgba(40, 30, 20, 0.35), transparent 40%);
       }
-      .hero-inner { position: relative; z-index: 2; color: #fff; padding: 0 clamp(24px, 7vw, 90px); max-width: 720px; }
+      .hero-inner { position: relative; z-index: 2; color: #fff; padding: 0 clamp(24px, 7vw, 90px); max-width: 760px; }
       .hero .eyebrow {
+        display: inline-flex; align-items: center; gap: 14px;
         font-family: 'Cormorant Garamond', serif; letter-spacing: 0.3em; font-size: 15px;
-        color: #f3e3cf; margin-bottom: 18px; text-transform: none;
+        color: #f3e3cf; margin-bottom: 20px; text-transform: none;
       }
+      .hero .eyebrow::before { content: ''; width: 38px; height: 1px; background: var(--gold); }
       .hero-title {
         font-family: 'Shippori Mincho', serif; font-weight: 600;
-        font-size: clamp(34px, 6vw, 62px); line-height: 1.45; text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        font-size: clamp(38px, 6.6vw, 74px); line-height: 1.42; text-shadow: 0 2px 24px rgba(0, 0, 0, 0.34);
       }
-      .hero-sub { margin-top: 16px; font-size: 15px; letter-spacing: 0.1em; color: #f0e6d8; }
-      .hero-btns { margin-top: 34px; display: flex; gap: 14px; flex-wrap: wrap; }
+      .hero-sub { margin-top: 18px; font-size: 15px; letter-spacing: 0.1em; color: #f0e6d8; }
+      .hero-btns { margin-top: 36px; display: flex; gap: 14px; flex-wrap: wrap; }
+      /* スクロール誘導（ヒーロー下中央） */
+      .hero-scroll {
+        position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 3;
+        display: inline-flex; flex-direction: column; align-items: center; gap: 8px;
+        font-family: 'Cormorant Garamond', serif; font-size: 11px; letter-spacing: 0.34em;
+        text-transform: uppercase; color: #f3e3cf; text-decoration: none; opacity: 0.85;
+      }
+      .hero-scroll::after {
+        content: ''; width: 1px; height: 40px;
+        background: linear-gradient(#f3e3cf, transparent);
+        animation: scrollPulse 2.2s ease-in-out infinite;
+      }
+      @keyframes scrollPulse { 0%, 100% { transform: scaleY(0.5); opacity: 0.4; transform-origin: top; } 50% { transform: scaleY(1); opacity: 1; transform-origin: top; } }
+      @media (prefers-reduced-motion: reduce) { .hero-scroll::after { animation: none; } }
 
-      /* コンセプト */
-      .concept { text-align: center; padding: clamp(64px, 9vw, 110px) 24px; background: var(--cream); }
+      /* コンセプト（明るいpaperで抜く） */
+      .concept { text-align: center; padding: clamp(64px, 9vw, 110px) 24px; background: var(--paper); }
       .concept-lead { max-width: 30em; margin: 22px auto 0; color: #5c5346; font-size: 16px; }
 
-      /* メニュー */
+      /* メニュー（標準cream） */
       .menu { background: var(--cream); padding: clamp(74px, 9vw, 118px) 24px; }
       .menu-head { text-align: center; margin-bottom: 46px; }
       .menu-card {
@@ -324,8 +353,8 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       .about-points li { position: relative; padding-left: 22px; font-size: 14px; color: #5c5346; }
       .about-points li::before { content: '✦'; position: absolute; left: 0; color: var(--gold); }
 
-      /* Voices */
-      .voices { text-align: center; padding: clamp(74px, 9vw, 118px) 24px; background: var(--cream); }
+      /* Voices（一段濃いcream2でメリハリ） */
+      .voices { text-align: center; padding: clamp(74px, 9vw, 118px) 24px; background: var(--cream2); }
       .voice-grid {
         max-width: 1000px; margin: 44px auto 0; display: grid;
         grid-template-columns: repeat(3, 1fr); gap: 26px;
@@ -374,8 +403,8 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       }
       .pet-badge svg { width: 16px; height: 16px; }
 
-      /* アクセス（地図） */
-      .access { display: grid; grid-template-columns: 0.92fr 1.08fr; align-items: stretch; background: var(--cream); }
+      /* アクセス（地図・明るいpaper） */
+      .access { display: grid; grid-template-columns: 0.92fr 1.08fr; align-items: stretch; background: var(--paper); }
       .access-text { padding: clamp(48px, 7vw, 90px) clamp(28px, 6vw, 72px); align-self: center; }
       .access-addr { font-size: 16px; margin-top: 6px; }
       .access-sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
@@ -395,7 +424,14 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
         .about { grid-template-columns: 1fr; }
         .about-photo { min-height: 300px; order: -1; }
         .voice-grid { grid-template-columns: 1fr; }
-        .hero-btns .btn { flex: 1; }
+        /* スマホ：ボタンを縦積みに。LINEを主役の全幅、電話は控えめに */
+        .hero-btns { flex-direction: column; gap: 11px; align-items: stretch; max-width: 360px; }
+        .hero-btns .btn { width: 100%; }
+        .hero-btns .btn-line2 { padding: 12px 24px; font-size: 13px; opacity: 0.92; }
+        /* スマホのヘッダー：店名とCTAが折り返さないよう少し詰める */
+        .hd { padding: 16px 18px; }
+        .hd-logo { font-size: 17px; letter-spacing: 0.08em; }
+        .hd-cta { padding: 7px 14px; font-size: 12px; }
       }
     </style>
   </body>
