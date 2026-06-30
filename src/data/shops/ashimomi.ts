@@ -1,10 +1,10 @@
 import type { Shop } from './types';
 
-// あしもみ本舗（足つぼ専門店）の店舗データ。
+// てもみ堂（全身マッサージ）の店舗データ。
 // ── 新規店舗を作るときは、このファイルを複製して値とテーマ色を差し替えるだけ ──
 // 差し替える主なもの: name / tagline / tel / lineUrl / mapUrl / mapEmbed / address / theme / voices
 export const ashimomi: Shop = {
-  name: '癒し処 あしもみ本舗',
+  name: 'てもみ堂',
   tagline: '全身マッサージ',
   description:
     'お一人おひとりの体に合わせて、肩・背中・腰から脚先まで全身をていねいにほぐす全身マッサージ。1.5〜2時間たっぷり、わかりやすい一律料金のお店です。',
@@ -41,7 +41,7 @@ export const ashimomi: Shop = {
     sub: '#6f8c6a', // 若竹
   },
 
-  logo: { pre: '癒し処 あし', accent: 'もみ', post: '本舗' },
+  logo: { pre: 'て', accent: 'もみ', post: '堂' },
 
   hero: {
     eyebrow: '全身マッサージ',
