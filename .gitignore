@@ -28,6 +28,7 @@ pnpm-debug.log*
 
 # Playwright(動作確認)の一時出力
 .playwright-mcp/
+ashimomi-*.jpeg
 
 # 非公開メモ（別のPrivateリポ portfolio-notes として管理。Publicには含めない）
 source/
