@@ -21,7 +21,7 @@ export const ashimomi: Shop = {
 
   address: '〒000-0000 栃木県那須塩原市○○町0-0-0',
   access: '○○駅から徒歩約0分',
-  hoursNote: '10:00 〜 20:00（受付）',
+  hoursNote: '10:00 〜 20:00',
   closedNote: '不定休',
   payment: '現金のみ',
   petNote: 'ペット同伴をご希望の方はご相談ください（事前にお知らせください）',

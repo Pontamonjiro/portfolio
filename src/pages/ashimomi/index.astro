@@ -25,15 +25,6 @@ const leafSvg = `<svg viewBox="0 0 64 40" fill="currentColor" aria-hidden="true"
   <ellipse cx="43" cy="25" rx="6" ry="2.3" transform="rotate(24 43 25)"/>
 </svg>`;
 
-// 肉球（ペット同伴の売り用）。set:html注入はscope属性が付かずCSSサイズ指定が効かないので width/height を直接指定
-const pawSvg = `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
-  <ellipse cx="6" cy="9" rx="2.1" ry="2.8"/>
-  <ellipse cx="10.6" cy="6.2" rx="2.1" ry="2.9"/>
-  <ellipse cx="15.4" cy="6.2" rx="2.1" ry="2.9"/>
-  <ellipse cx="19" cy="9" rx="2.1" ry="2.8"/>
-  <path d="M12.5 11c-2.8 0-5 2-5.6 4.3-.4 1.6.8 3 2.5 3 1 0 1.9-.4 3.1-.4s2.1.4 3.1.4c1.7 0 2.9-1.4 2.5-3C17.5 13 15.3 11 12.5 11z"/>
-</svg>`;
-
 // LINEアイコン（メイン連絡先として目立たせる用）
 const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 5.64 2 10.13c0 4.02 3.55 7.39 8.35 8.03.32.07.77.21.88.49.1.25.07.64.03.89l-.14.85c-.04.25-.2.99.86.54 1.06-.45 5.7-3.36 7.78-5.75C21.1 13.66 22 11.99 22 10.13 22 5.64 17.52 2 12 2z"/></svg>`;
 ---
@@ -100,7 +91,7 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
           <h3 class="menu-name">{menu?.name}</h3>
           <p class="menu-desc">{menu?.desc}</p>
           <div class="menu-price">
-            <span class="yen">¥</span>{(menu?.price ?? '').replace(/[¥円]/g, '')}
+            <span class="approx">約</span><span class="yen">¥</span>{(menu?.price ?? '').replace(/[¥円]/g, '')}
             <small>（税込・一律）</small>
           </div>
           <a class="btn btn-line-g sm" href={shop.lineUrl} target="_blank" rel="noopener"><Fragment set:html={lineIcon} />LINEで予約する</a>
@@ -132,8 +123,7 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       <div class="pet-inner">
         <p class="sec-en">With your pet</p>
         <h2 class="sec-jp">大切な家族（ペット）も、ご一緒に。</h2>
-        <p class="pet-lead">{shop.petNote}</p>
-        <span class="pet-badge"><Fragment set:html={pawSvg} /> 看板犬がお出迎え・ペット同伴 相談可</span>
+        <p class="pet-lead" set:html={shop.petNote.replace('（事前に', '<br>（事前に')} />
       </div>
     </section>
 
@@ -179,7 +169,6 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
     <footer class="ft">
       <div class="leaf"><Fragment set:html={leafSvg} /></div>
       <p class="ft-logo">{shop.name}</p>
-      <p class="ft-tagline">{shop.tagline}</p>
       <p class="ft-lead">ご予約・お問い合わせは <strong>LINE</strong> がいちばん簡単です。</p>
       <div class="ft-btns">
         <a class="btn btn-line-g lg" href={shop.lineUrl} target="_blank" rel="noopener">
@@ -226,13 +215,14 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
         text-transform: uppercase; margin-bottom: 10px;
       }
       /* 中央寄せ見出しは英字ラベルの両脇に金の飾り線を添える（統一感＋上品さ） */
-      .concept .sec-en, .menu-head .sec-en, .voices .sec-en, .pet .sec-en {
+      .concept .sec-en, .menu-head .sec-en, .voices .sec-en, .pet .sec-en, .about .sec-en {
         display: inline-flex; align-items: center; justify-content: center; gap: 14px;
       }
       .concept .sec-en::before, .concept .sec-en::after,
       .menu-head .sec-en::before, .menu-head .sec-en::after,
       .voices .sec-en::before, .voices .sec-en::after,
-      .pet .sec-en::before, .pet .sec-en::after {
+      .pet .sec-en::before, .pet .sec-en::after,
+      .about .sec-en::before, .about .sec-en::after {
         content: ''; width: 28px; height: 1px; background: currentColor; opacity: 0.45;
       }
       .sec-jp { font-family: 'Shippori Mincho', serif; font-size: clamp(22px, 3.2vw, 30px); line-height: 1.5; }
@@ -307,6 +297,8 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
         font-family: 'Cormorant Garamond', serif; font-size: 11px; letter-spacing: 0.34em;
         text-transform: uppercase; color: #f3e3cf; text-decoration: none; opacity: 0.85;
       }
+      /* letter-spacingの末尾字間ぶん文字が左に寄るので、同量を字下げして下の縦線と中央を合わせる */
+      .hero-scroll span { text-indent: 0.34em; }
       .hero-scroll::after {
         content: ''; width: 1px; height: 40px;
         background: linear-gradient(#f3e3cf, transparent);
@@ -316,11 +308,11 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       @media (prefers-reduced-motion: reduce) { .hero-scroll::after { animation: none; } }
 
       /* コンセプト（明るいpaperで抜く） */
-      .concept { text-align: center; padding: clamp(64px, 9vw, 110px) 24px; background: var(--paper); }
+      .concept { text-align: center; padding: clamp(48px, 7vw, 84px) 24px; background: var(--paper); }
       .concept-lead { max-width: 30em; margin: 22px auto 0; color: #5c5346; font-size: 16px; }
 
       /* メニュー（標準cream） */
-      .menu { background: var(--cream); padding: clamp(74px, 9vw, 118px) 24px; }
+      .menu { background: var(--cream); padding: clamp(56px, 7vw, 90px) 24px; }
       .menu-head { text-align: center; margin-bottom: 46px; }
       .menu-card {
         max-width: 880px; margin: 0 auto; background: #fff;
@@ -338,6 +330,7 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
         font-family: 'Cormorant Garamond', serif; font-size: 46px; color: var(--brown-d);
         margin: 14px 0 22px; line-height: 1; display: flex; align-items: baseline; gap: 2px;
       }
+      .menu-price .approx { font-family: 'Noto Sans JP', sans-serif; font-size: 20px; font-weight: 400; color: var(--brown-d); margin-right: 3px; }
       .menu-price .yen { font-size: 26px; }
       .menu-price small { font-family: 'Noto Sans JP'; font-size: 12px; color: var(--muted); margin-left: 10px; font-weight: 300; }
       .menu-note { max-width: 880px; margin: 22px auto 0; font-size: 12.5px; color: var(--muted); text-align: center; }
@@ -347,21 +340,23 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       .about-photo { min-height: 420px; position: relative; }
       .about-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
       .about-text { padding: clamp(48px, 7vw, 96px) clamp(28px, 6vw, 80px); align-self: center; }
-      .about-text h2 { margin-bottom: 20px; }
+      /* ABOUTラベル＋見出しは他セクションと同様に中央寄せ（本文・箇条書きは左のまま） */
+      .about-text .sec-en { display: flex; }
+      .about-text h2 { margin-bottom: 20px; text-align: center; }
       .about-text p { color: #5c5346; font-size: 15px; }
       .about-points { list-style: none; margin-top: 24px; display: grid; gap: 10px; }
       .about-points li { position: relative; padding-left: 22px; font-size: 14px; color: #5c5346; }
       .about-points li::before { content: '✦'; position: absolute; left: 0; color: var(--gold); }
 
       /* Voices（一段濃いcream2でメリハリ） */
-      .voices { text-align: center; padding: clamp(74px, 9vw, 118px) 24px; background: var(--cream2); }
+      .voices { text-align: center; padding: clamp(56px, 7vw, 90px) 24px; background: var(--cream2); }
       .voice-grid {
         max-width: 1000px; margin: 44px auto 0; display: grid;
         grid-template-columns: repeat(3, 1fr); gap: 26px;
       }
       .voice {
         background: #fff; border: 1px solid var(--line); border-radius: 3px;
-        padding: 34px 26px; text-align: left;
+        padding: 38px 34px; text-align: left;
       }
       .voice blockquote {
         font-family: 'Shippori Mincho', serif; font-size: 16px; line-height: 1.9; color: var(--ink);
@@ -372,7 +367,6 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       /* Footer */
       .ft { text-align: center; background: var(--cream2); padding: clamp(60px, 8vw, 96px) 24px 70px; }
       .ft-logo { font-family: 'Shippori Mincho', serif; font-weight: 700; font-size: 26px; letter-spacing: 0.14em; }
-      .ft-tagline { color: var(--muted); font-size: 13px; letter-spacing: 0.16em; margin-top: 6px; }
       .ft-lead { margin: 22px 0 18px; font-size: 15px; color: var(--ink); }
       .ft-lead strong { color: var(--brown-d); font-weight: 700; }
       .ft-tel {
@@ -389,19 +383,13 @@ const lineIcon = `<svg viewBox="0 0 24 24" width="19" height="19" fill="currentC
       .ft-demo { margin-top: 28px; font-size: 11px; color: #a99c88; }
 
       /* ペット同伴（看板犬の写真を背景に敷く＝黒オーバーレイ＋白文字） */
-      .pet { position: relative; overflow: hidden; text-align: center; color: #fff; padding: clamp(58px, 8vw, 92px) 24px; }
+      .pet { position: relative; overflow: hidden; text-align: center; color: #fff; padding: clamp(46px, 6.5vw, 74px) 24px; }
       .pet-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
       .pet-veil { position: absolute; inset: 0; background: linear-gradient(rgba(30, 24, 18, 0.42), rgba(30, 24, 18, 0.54)); }
       .pet-inner { position: relative; z-index: 2; }
       .pet .sec-en { color: #f1e4d0; }
       .pet .sec-jp { color: #fff; text-shadow: 0 2px 16px rgba(0, 0, 0, 0.3); }
       .pet-lead { max-width: 30em; margin: 18px auto 0; color: #f2e9dc; font-size: 15px; }
-      .pet-badge {
-        display: inline-flex; align-items: center; gap: 8px; margin-top: 26px;
-        background: rgba(255, 255, 255, 0.96); border: 1px solid rgba(255, 255, 255, 0.5); color: var(--brown-d);
-        padding: 10px 22px; border-radius: 999px; font-size: 13px; letter-spacing: 0.06em; white-space: nowrap;
-      }
-      .pet-badge svg { width: 16px; height: 16px; }
 
       /* アクセス（地図・明るいpaper） */
       .access { display: grid; grid-template-columns: 0.92fr 1.08fr; align-items: stretch; background: var(--paper); }
