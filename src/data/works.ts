@@ -17,7 +17,7 @@ export type Work = {
 export const works: Work[] = [
   {
     slug: 'ashimomi',
-    title: 'てもみ堂',
+    title: '和み処 てもみ堂',
     description: '全身もみほぐしの店舗サイト。店舗データ差し替え式の量産テンプレート。',
     tags: ['店舗サイト', 'LP', 'テンプレート'],
   },
